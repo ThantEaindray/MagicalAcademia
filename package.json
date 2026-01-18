@@ -1,0 +1,29 @@
+{
+  "name": "bed-ca2-thanteaindray",
+  "version": "1.0.0",
+  "description": "You are required to build your folder structures for your project.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "type": "git",
+    "url": "git+https://github.com/ST0503-BED/bed-ca2-ThantEaindray.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ST0503-BED/bed-ca2-ThantEaindray/issues"
+  },
+  "homepage": "https://github.com/ST0503-BED/bed-ca2-ThantEaindray#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.16.1",
+    "nodemon": "^3.1.11"
+  }
+}
