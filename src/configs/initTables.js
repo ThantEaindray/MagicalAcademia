@@ -83,33 +83,103 @@ CREATE TABLE UserCompetitionEntries (
 );
 
 INSERT INTO Users (username, points) VALUES
-('socuser321', 0),
-('wellnessKing', 0),
-('avaMage', 0);
+('socuser321', 60),
+('wellnessKing', 120),
+('avaMage', 200),
+('gryffinRiser', 90),
+('ravenPlanner', 150),
+('slythGrind', 80);
 
 INSERT INTO WellnessChallenges (creator_id, description, points) VALUES
-(1, 'Sleep like a boss – Get 7+ hours of sleep', 10),
-(1, 'Stairs over elevator? Respect. – Take the stairs today', 20),
-(2, 'Digital detox (mini edition) – No phone for 1 hour', 10),
-(2, 'Touch grass IRL – Take a 15-minute walk outside', 10),
-(2, 'IRL > DMs – Talk to a friend face-to-face', 20),
-(3, 'Declutter your chaos – Clean your desk or room', 20),
-(3, 'Help a homie – Assist someone without being asked', 20);
+(1, 'Sleep like a prefect: 7+ hours of sleep', 10),
+(1, 'Take the stairs (no Floo Powder): choose stairs today', 20),
+(2, 'Digital detox: no phone for 1 hour', 10),
+(2, 'Touch grass: take a 15-minute walk outside', 10),
+(2, 'Talk IRL: have a real convo with a friend', 20),
+(3, 'Declutter desk: tidy your study space', 20),
+(3, 'Hydration check: drink 2 bottles of water', 10),
+(4, 'Stretch break: 10 minutes of stretching', 10),
+(5, 'Plan your day: write a short to-do list', 10),
+(6, 'Early start: begin your work before 10am', 20);
 
 INSERT INTO Courses (name, description, year_level) VALUES
-('Charms of Consistency', 'Build good habits using small daily actions.', 1),
-('Potions for Focus', 'Improve focus and concentration routines.', 1),
-('Defense Against Distraction', 'Learn to block procrastination.', 1);
+('Charms', 'Learn everyday charms to build routines.', 1),
+('Potions', 'Brew focus and energy through self-care routines.', 1),
+('Defense Against the Dark Arts', 'Defend against distractions and procrastination.', 1),
+('Transfiguration', 'Transform bad habits into productive ones.', 2),
+('Care of Magical Creatures', 'Balance mental and physical wellness gently.', 2),
+('Ancient Runes', 'Understand consistency and long-term patterns.', 2);
 
 INSERT INTO Spells (name, effect, cost_points) VALUES
-('Inkglow Notes', 'Reveal a short study tip after completing a challenge.', 0),
-('Mindsharpen', 'Gain +5 bonus points on your next completion.', 20),
-('TimeStitch', 'One-time streak save token.', 50),
-('Ward of Study', 'Small point bonus for the next 24 hours.', 30);
+('Lumos', 'Creates light for late-night study sessions.', 0),
+('Alohomora', 'Unlocks motivation to start tasks faster.', 10),
+('Protego', 'Shields focus from distractions for a while.', 20),
+('Expelliarmus', 'Disarms distractions like doom-scrolling.', 30),
+('Expecto Patronum', 'Boosts morale during stressful weeks.', 40),
+('Accio', 'Pulls your attention back to the task.', 25),
+('Finite Incantatem', 'Ends bad habits temporarily.', 15),
+('Reparo', 'Helps recover after a broken streak.', 35),
+('Wingardium Leviosa', 'Lifts your mood and energy to keep going.', 20),
+('Stupefy', 'Stuns distractions so you can finish work.', 30);
 
 INSERT INTO Competitions (name, description, reward_points) VALUES
-('House Cup: Week 1', 'Complete any 3 challenges this week.', 80),
-('Duel of Discipline', 'Highest challenge score wins.', 100);
+('House Cup', 'Earn points by completing challenges for your house.', 100),
+('Triwizard Tournament', 'Hard mode competition for serious grinders.', 150),
+('Dueling Club', 'Fastest completion wins points.', 120),
+('O.W.L. Prep Week', 'Consistency week leading up to assessments.', 90),
+('N.E.W.T. Mastery Challenge', 'Advanced challenge for disciplined students.', 130);
+
+INSERT INTO CourseEnrollments (user_id, course_id, progress) VALUES
+(1, 1, 20),
+(1, 3, 35),
+(1, 2, 10),
+(2, 2, 55),
+(2, 4, 15),
+(3, 5, 30),
+(3, 6, 25),
+(4, 1, 40),
+(4, 3, 60),
+(5, 6, 45),
+(5, 2, 30),
+(6, 4, 20);
+
+INSERT INTO UserCompletions (challenge_id, user_id, details) VALUES
+(1, 1, 'Slept early and woke up on time.'),
+(2, 1, 'Used stairs instead of lift.'),
+(3, 2, 'Kept phone away during study.'),
+(4, 3, 'Walked around campus for 15 mins.'),
+(5, 2, 'Had a real convo with a friend.'),
+(6, 3, 'Cleaned my desk before starting.'),
+(7, 4, 'Finished 2 bottles of water.'),
+(8, 5, 'Stretched after long sitting.'),
+(9, 6, 'Planned a to-do list and followed it.'),
+(10, 5, 'Started work early and stayed focused.');
+
+INSERT INTO UserSpells (user_id, spell_id) VALUES
+(1, 1),
+(1, 3),
+(1, 6),
+(2, 2),
+(2, 4),
+(2, 7),
+(3, 5),
+(3, 8),
+(4, 1),
+(4, 10),
+(5, 9),
+(6, 3);
+
+INSERT INTO UserCompetitionEntries (competition_id, user_id, score) VALUES
+(1, 1, 60),
+(1, 2, 45),
+(1, 3, 75),
+(2, 3, 90),
+(2, 5, 80),
+(3, 4, 50),
+(3, 6, 55),
+(4, 2, 70),
+(4, 5, 65),
+(5, 1, 85);
 `;
 
 pool.query(SQLSTATEMENT, (error, results, fields) => {
