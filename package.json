@@ -4,11 +4,12 @@
   "description": "You are required to build your folder structures for your project.",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "init_tables": "node src/configs/createSchema.js && node src/configs/initTables.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
     "type": "git",
     "url": "git+https://github.com/ST0503-BED/bed-ca2-ThantEaindray.git"
   },
