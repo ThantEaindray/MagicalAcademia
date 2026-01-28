@@ -73,13 +73,8 @@ npm run init_tables
 ```
 npm start
 ```
+The application should now be running on `http://localhost:3000/` and testing can begin.
 
-
-The application should now be running on `http://localhost:3000/
-` and testing can begin.
-
-### 3 - Features
----
 ### 3 - Features
 ---
 
@@ -131,7 +126,11 @@ This reinforces gamification by rewarding meaningful progress.
 This prevents orphan completion records and keeps the database clean.
 
 #### 5 Gamification System (Magical Academia Theme)
+
+These gamification mechanics are designed to encourage consistent engagement while preventing point exploitation through backend validation and ownership checks.
+
 ---
+
 The system includes a full gamification layer:
 - **Spells Shop** – users spend points to unlock magical spells
 - **Inventory** – unlocked spells are permanently stored per user
@@ -216,7 +215,7 @@ DELETE /challenges/:challenge_id
 - Delete a challenge and its related completion records.
 - Returns 204 No Content if deleted successfully.
 
-#### Challenge Routes
+#### Gamification Routes
 
 GET /game/spells
 
