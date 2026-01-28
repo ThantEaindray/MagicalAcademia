@@ -16,14 +16,16 @@ DROP TABLE IF EXISTS Users;
 CREATE TABLE Users (
   user_id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(255) NOT NULL UNIQUE,
-  points INT DEFAULT 0
+  points INT DEFAULT 0,
+  role VARCHAR(20) DEFAULT 'USER'
 );
 
 CREATE TABLE WellnessChallenges (
   challenge_id INT AUTO_INCREMENT PRIMARY KEY,
   creator_id INT NOT NULL,
   description TEXT NOT NULL,
-  points INT NOT NULL
+  points INT NOT NULL,
+  multiplier DECIMAL(3,2) DEFAULT 1.00
 );
 
 CREATE TABLE UserCompletions (
@@ -82,25 +84,26 @@ CREATE TABLE UserCompetitionEntries (
   UNIQUE (competition_id, user_id)
 );
 
-INSERT INTO Users (username, points) VALUES
-('socuser321', 60),
-('wellnessKing', 120),
-('avaMage', 200),
-('gryffinRiser', 90),
-('ravenPlanner', 150),
-('slythGrind', 80);
+INSERT INTO Users (username, points, role) VALUES
+('admin', 9999, 'ADMIN'),
+('socuser321', 60, 'USER'),
+('wellnessKing', 120, 'USER'),
+('avaMage', 200, 'USER'),
+('gryffinRiser', 90, 'USER'),
+('ravenPlanner', 150, 'USER'),
+('slythGrind', 80, 'USER');
 
-INSERT INTO WellnessChallenges (creator_id, description, points) VALUES
-(1, 'Sleep like a prefect: 7+ hours of sleep', 10),
-(1, 'Take the stairs (no Floo Powder): choose stairs today', 20),
-(2, 'Digital detox: no phone for 1 hour', 10),
-(2, 'Touch grass: take a 15-minute walk outside', 10),
-(2, 'Talk IRL: have a real convo with a friend', 20),
-(3, 'Declutter desk: tidy your study space', 20),
-(3, 'Hydration check: drink 2 bottles of water', 10),
-(4, 'Stretch break: 10 minutes of stretching', 10),
-(5, 'Plan your day: write a short to-do list', 10),
-(6, 'Early start: begin your work before 10am', 20);
+INSERT INTO WellnessChallenges (creator_id, description, points, multiplier) VALUES
+(1, 'Sleep like a prefect: 7+ hours of sleep', 10, 1.50),
+(1, 'Take the stairs (no Floo Powder): choose stairs today', 20, 1.00),
+(2, 'Digital detox: no phone for 1 hour', 10, 2.00),
+(2, 'Touch grass: take a 15-minute walk outside', 10, 1.00),
+(2, 'Talk IRL: have a real convo with a friend', 20, 1.00),
+(3, 'Declutter desk: tidy your study space', 20, 1.50),
+(3, 'Hydration check: drink 2 bottles of water', 10, 1.00),
+(4, 'Stretch break: 10 minutes of stretching', 10, 1.00),
+(5, 'Plan your day: write a short to-do list', 10, 1.00),
+(6, 'Early start: begin your work before 10am', 20, 2.00);
 
 INSERT INTO Courses (name, description, year_level) VALUES
 ('Charms', 'Learn everyday charms to build routines.', 1),
