@@ -199,7 +199,7 @@ module.exports.getAllCompetitions = (req, res, next) => {
 };
 
 /*
-Join a competition.
+Join a competition + reward points.
 - Reads competition_id from URL
 - Reads user_id from body
 - Checks:
@@ -209,7 +209,9 @@ Join a competition.
   4) user not found -> 404
   5) already joined -> 409
 - If ok:
-  - insert entry (201)
+  - insert entry
+  - add reward_points to user
+  - return 201 + points awarded
 */
 module.exports.joinCompetition = (req, res, next) => {
 
@@ -229,7 +231,7 @@ module.exports.joinCompetition = (req, res, next) => {
         user_id: userId
     };
 
-    // Step 1: competition exists?
+    // Step 1: check competition exists
     gamificationModel.selectCompetitionById(data, (err1, comps) => {
         if (err1) {
             console.error("Failed joinCompetition (competition):", err1);
@@ -240,7 +242,7 @@ module.exports.joinCompetition = (req, res, next) => {
             return res.status(404).json({ message: "Competition not found" });
         }
 
-        // Step 2: user exists?
+        // Step 2: check user exists
         gamificationModel.selectUserById(data, (err2, users) => {
             if (err2) {
                 console.error("Failed joinCompetition (user):", err2);
@@ -251,7 +253,7 @@ module.exports.joinCompetition = (req, res, next) => {
                 return res.status(404).json({ message: "User not found" });
             }
 
-            // Step 3: already joined?
+            // Step 3: check already joined (prevents double reward)
             gamificationModel.selectCompetitionEntry(data, (err3, rows) => {
                 if (err3) {
                     console.error("Failed joinCompetition (check joined):", err3);
@@ -269,16 +271,42 @@ module.exports.joinCompetition = (req, res, next) => {
                         return res.status(500).json(err4);
                     }
 
-                    return res.status(201).json({
-                        message: "Joined competition successfully",
-                        competition_id: data.competition_id,
-                        user_id: data.user_id
+                    // Step 5: get reward_points
+                    gamificationModel.selectCompetitionRewardPoints(data, (err5, rewardRows) => {
+                        if (err5) {
+                            console.error("Failed joinCompetition (get reward_points):", err5);
+                            return res.status(500).json(err5);
+                        }
+
+                        const rewardPoints = Number(rewardRows[0].reward_points || 0);
+
+                        // Step 6: add reward points to user
+                        const pointsData = {
+                            user_id: data.user_id,
+                            points: rewardPoints
+                        };
+
+                        gamificationModel.addPointsToUser(pointsData, (err6, updateResult) => {
+                            if (err6) {
+                                console.error("Failed joinCompetition (add points):", err6);
+                                return res.status(500).json(err6);
+                            }
+
+                            return res.status(201).json({
+                                message: "Joined competition successfully",
+                                competition_id: data.competition_id,
+                                user_id: data.user_id,
+                                reward_points_awarded: rewardPoints
+                                // student note: I return reward_points_awarded so frontend can show a nice popup like “+100 points!”
+                            });
+                        });
                     });
                 });
             });
         });
     });
 };
+
 
 /*
 Retrieve leaderboard for a competition.

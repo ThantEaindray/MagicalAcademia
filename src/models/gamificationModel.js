@@ -153,3 +153,29 @@ module.exports.selectLeaderboard = (data, callback) => {
 
     pool.query(SQLSTATEMENT, VALUES, callback);
 };
+
+/* Get reward_points from a competition */
+module.exports.selectCompetitionRewardPoints = (data, callback) => {
+    const SQLSTATEMENT = `
+        SELECT reward_points
+        FROM Competitions
+        WHERE competition_id = ?;
+    `;
+
+    const VALUES = [data.competition_id];
+
+    pool.query(SQLSTATEMENT, VALUES, callback);
+};
+
+/* Add points to a user */
+module.exports.addPointsToUser = (data, callback) => {
+    const SQLSTATEMENT = `
+        UPDATE Users
+        SET points = points + ?
+        WHERE user_id = ?;
+    `;
+
+    const VALUES = [data.points, data.user_id];
+
+    pool.query(SQLSTATEMENT, VALUES, callback);
+};
