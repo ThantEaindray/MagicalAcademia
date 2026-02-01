@@ -15,11 +15,18 @@ function fetchMethod(url, callback, method = "GET", data = null, token = null) {
         headers["Content-Type"] = "application/json";
     }
 
-    if (token) { // check have or not
+    // if token not passed in, try to take from localStorage automatically
+    // I keep forgetting to pass token, so this makes my code less messy
+    if (!token) {
+        token = localStorage.getItem("token");
+    }
+
+    // only attach Authorization if token exists
+    if (token) {
         headers["Authorization"] = "Bearer " + token;
     }
 
-    let options = { // case-sensitive
+    const options = {
         method: method.toUpperCase(),
         headers: headers,
     };
@@ -29,7 +36,6 @@ function fetchMethod(url, callback, method = "GET", data = null, token = null) {
     }
 
     fetch(url, options)
-        // chain : do this after that
         .then((response) => {
             if (response.status == 204) {
                 callback(response.status, {});
@@ -37,19 +43,5 @@ function fetchMethod(url, callback, method = "GET", data = null, token = null) {
                 response.json().then((responseData) => callback(response.status, responseData));
             }
         })
-        // if error, do this
         .catch((error) => console.error(`Error from ${method} ${url}:`, error));
 }
-
-// JQUERY METHOD OR AXIOS METHOD NEED TO PUT SCRIPT IN INDEX.HTML
-
-//=====================================================================================
-// JQUERY METHOD
-// This function uses the jQuery ajax method to make a request to the server.
-//=====================================================================================
-
-
-//=====================================================================================
-// AXIOS METHOD
-// This function uses the axios method to make a request to the server.
-//=====================================================================================

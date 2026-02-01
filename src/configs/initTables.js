@@ -16,8 +16,11 @@ DROP TABLE IF EXISTS Users;
 CREATE TABLE Users (
   user_id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(255) NOT NULL UNIQUE,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
   points INT DEFAULT 0,
-  role VARCHAR(20) DEFAULT 'USER'
+  role VARCHAR(20) DEFAULT 'USER',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE WellnessChallenges (
@@ -25,7 +28,8 @@ CREATE TABLE WellnessChallenges (
   creator_id INT NOT NULL,
   description TEXT NOT NULL,
   points INT NOT NULL,
-  multiplier DECIMAL(3,2) DEFAULT 1.00
+  multiplier DECIMAL(3,2) DEFAULT 1.00,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE UserCompletions (
@@ -84,14 +88,14 @@ CREATE TABLE UserCompetitionEntries (
   UNIQUE (competition_id, user_id)
 );
 
-INSERT INTO Users (username, points, role) VALUES
-('admin', 9999, 'ADMIN'),
-('socuser321', 60, 'USER'),
-('wellnessKing', 120, 'USER'),
-('avaMage', 200, 'USER'),
-('gryffinRiser', 90, 'USER'),
-('ravenPlanner', 150, 'USER'),
-('slythGrind', 80, 'USER');
+INSERT INTO Users (username, email, password_hash, points, role) VALUES
+('admin', 'admin@magic.com', '$2b$10$yEaJx.68IZqIeuiu0wtBM.D2Xx4igP064WP4oWlIDqkSgIgOj3Fl2', 9999, 'ADMIN'),
+('socuser321', 'socuser321@magic.com', '$2b$10$mU/n95K1yuDwjfDWm7NLkONHcmBUaqkOauW5ms/Z95mKAEpaOxOJ.', 60, 'USER'),
+('wellnessKing', 'wellnessKing@magic.com', '$2b$10$gy9bFR6Wt/HtFxM1UZhgTuQc6NTTavoGBGeavcpc8w3lyjwOTIwqy', 120, 'USER'),
+('avaMage', 'avaMage@magic.com', '$2b$10$lJpLdQMQ.9465HwSylEdjuut2r/SHilmlrtmZZu8UY0kC85/xwo4a', 200, 'USER'),
+('gryffinRiser', 'gryffinRiser@magic.com', '$2b$10$gQlhBXbYBeCoH.g.t/U3LOnIjDIhrrW6221xpaNqqs34lggwZ93ae', 90, 'USER'),
+('ravenPlanner', 'ravenPlanner@magic.com', '$2b$10$ijCj5wunuy4GE4zS1yGmkuJiZLVs1PS5qaMn6Awx220csg9G/MKNu', 150, 'USER'),
+('slythGrind', 'slythGrind@magic.com', '$2b$10$GpypgzN8IMqqSlWItduV1eKqbgB7QZRkQCXC2tP5.BErWqW0Bmy7a', 80, 'USER');
 
 INSERT INTO WellnessChallenges (creator_id, description, points, multiplier) VALUES
 (1, 'Sleep like a prefect: 7+ hours of sleep', 10, 1.50),

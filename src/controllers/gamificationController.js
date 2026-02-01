@@ -297,7 +297,7 @@ module.exports.joinCompetition = (req, res, next) => {
                                 competition_id: data.competition_id,
                                 user_id: data.user_id,
                                 reward_points_awarded: rewardPoints
-                                // student note: I return reward_points_awarded so frontend can show a nice popup like “+100 points!”
+                                // I return reward_points_awarded so frontend can show a nice popup like “+100 points!”
                             });
                         });
                     });
