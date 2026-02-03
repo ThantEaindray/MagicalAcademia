@@ -1,17 +1,18 @@
 const pool = require("../services/db");
 
-/*
-Find user by email (for login).
+/* 
+Find user by username (for login).
 */
-module.exports.selectUserByEmail = (data, callback) => {
+module.exports.selectUserByUsername = (data, callback) => {
   const SQLSTATEMENT = `
     SELECT user_id, username, email, password_hash, points, role
     FROM Users
-    WHERE email = ?;
+    WHERE username = ?;
   `;
-  const VALUES = [data.email];
+  const VALUES = [data.username];
   pool.query(SQLSTATEMENT, VALUES, callback);
 };
+
 
 /*
 Check if email already exists (for register).
@@ -51,3 +52,4 @@ module.exports.insertUser = (data, callback) => {
   const VALUES = [data.username, data.email, data.password_hash];
   pool.query(SQLSTATEMENT, VALUES, callback);
 };
+

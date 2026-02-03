@@ -1,21 +1,29 @@
-:root
-{
-    --custom-color: #096f2a;
-    --custom-color-darker: #095521;
-    --custom-color-light: #92f7b2;
-    --custom-color-rgb: 9, 111, 42;
-    --custom-color-light-rgb: 146, 247, 178;
+:root {
+    /* ===== Purple Theme Colours ===== */
+    --custom-color: #6f42c1;          /* primary purple */
+    --custom-color-darker: #59339d;   /* hover / active */
+    --custom-color-light: #d6c9f2;    /* focus / highlights */
+
+    --custom-color-rgb: 111, 66, 193;
+    --custom-color-light-rgb: 214, 201, 242;
+
     --custom-text-color: #ffffff;
 }
 
-.accordion
-{
+/* ===== Page Background ===== */
+body {
+    background-color: #9c89eb;
+}
+
+/* ===== Accordion ===== */
+.accordion {
     --bs-accordion-btn-focus-border-color: var(--custom-color-light);
     --bs-accordion-btn-focus-box-shadow: 0 0 0 0.25rem var(--custom-color-light);
     --bs-accordion-active-bg: var(--custom-color-light);
     --bs-accordion-active-color: var(--custom-color-darker);
 }
 
+/* ===== Primary Button ===== */
 .btn-primary {
     --bs-btn-bg: var(--custom-color);
     --bs-btn-border-color: var(--custom-color);
@@ -27,22 +35,25 @@
     --bs-btn-disabled-border-color: var(--bs-success-rgb);
 }
 
+/* ===== Bootstrap Primary Background ===== */
 .bg-primary {
     --bs-bg-opacity: 1;
-    background-color: rgba(var(--custom-color-rgb),var(--bs-bg-opacity))!important;
+    background-color: rgba(var(--custom-color-rgb), var(--bs-bg-opacity)) !important;
 }
 
+/* ===== Form Elements ===== */
 .form-check-input:checked {
     background-color: var(--custom-color);
     border-color: var(--custom-color);
 }
 
-.form-control:focus, 
+.form-control:focus,
 .form-check-input:focus {
     border-color: rgba(var(--custom-color-light-rgb), 0.8);
     box-shadow: 0 0 0 4px rgba(var(--custom-color-light-rgb), 0.6);
 }
 
+/* ===== Footer ===== */
 footer {
     color: var(--custom-text-color);
 }

@@ -1,17 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login | Magical Academia</title>
 
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
-    crossorigin="anonymous"
-  />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous" />
   <link href="css/style.css" rel="stylesheet" />
   <link href="css/color.css" rel="stylesheet" />
 
@@ -21,7 +18,8 @@
       height: 220px;
       object-fit: cover;
       display: block;
-      background: #c9f7d9; /* fallback */
+      background: #c9f7d9;
+      /* fallback */
     }
   </style>
 </head>
@@ -48,8 +46,11 @@
         </ul>
 
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a id="profileButton" href="profile.html" class="nav-link">Profile</a></li>
-          <li class="nav-item"><a id="logoutButton" href="#" class="nav-link">Logout</a></li>
+          <li class="nav-item">
+            <a id="profileButton" href="profile.html" class="nav-link d-none">Profile</a>
+          </li>
+          <li class="nav-item">
+            <a id="logoutButton" href="#" class="nav-link d-none">Logout</a>
           <li class="nav-item"><a id="loginButton" href="login.html" class="nav-link active">Login</a></li>
           <li class="nav-item">
             <a id="registerButton" class="btn text-bg-dark btn-small navbar-btn" href="register.html">Register</a>
@@ -68,12 +69,9 @@
           <div class="card shadow-sm border-0 overflow-hidden">
             <div class="row g-0">
               <div class="col-md-5">
-                <img
-                  id="loginHeroImg"
-                  class="hero-img"
-                  src="https://upload.wikimedia.org/wikipedia/commons/8/8b/Christ_Church_Hall_Oxford.jpg"
-                  alt="Magical hall image"
-                />
+                <img id="loginHeroImg" class="hero-img"
+                  src="https://i.pinimg.com/736x/d7/cf/90/d7cf90001a43e9464bc0147253e3ee6a.jpg" alt="Magical hall image"
+                  loading="lazy" referrerpolicy="no-referrer" />
               </div>
               <div class="col-md-7">
                 <div class="card-body p-4">
@@ -91,18 +89,21 @@
       <!-- Login form -->
       <div class="row justify-content-center">
         <div class="col-md-6">
-          <form id="loginForm" class="card p-4 shadow-sm">
-            <h3 class="mb-3 text-center">Login</h3>
+          <form id="loginForm" class="card p-4 shadow-sm" action="#" method="post" novalidate>
 
+            <h3 class="mb-3 text-center">Login</h3>
             <div class="form-group mb-3">
-              <label for="email">School Owl Email</label>
-              <input type="email" class="form-control" id="email" required autocomplete="email" />
+              <label for="username">Wizard Name</label>
+              <input type="text" id="username" name="username" placeholder="Enter your Wizard Name"
+                autocomplete="username" />
+              <!-- backend login uses username, so I login using this instead of email -->
             </div>
 
             <div class="form-group mb-4">
               <label for="password">Password</label>
-              <input type="password" class="form-control" id="password" required autocomplete="current-password" />
-              <!-- no password rules here, just pass to backend -->
+              <input type="password" id="password" name="password" placeholder="Enter your password"
+                autocomplete="current-password" />
+              <!-- lecturer said no password restrictions, so frontend just sends whatever user types -->
             </div>
 
             <button type="submit" class="btn btn-primary w-100 mb-3">Enter Academy</button>
@@ -127,16 +128,15 @@
     <p class="m-0 py-0 px-4">Magical Academia (CA2) — Backend + Frontend Demo Project</p>
   </footer>
 
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
-    crossorigin="anonymous"
-  ></script>
+    crossorigin="anonymous"></script>
 
   <!-- Practical helpers -->
-  <script src="js/queryCmds.js"></script>
-  <script src="js/getCurrentURL.js"></script>
-  <script src="js/userNavbarToggle.js"></script>
+  <script src="js/getCurrentURL.js" defer></script>
+  <script src="js/queryCmds.js" defer></script>
+  <script src="js/loginUser.js" defer></script>
+
 
   <!-- Page JS -->
   <script src="js/loginUser.js"></script>
@@ -148,9 +148,9 @@
       if (!img) return;
 
       const images = [
-        "https://upload.wikimedia.org/wikipedia/commons/8/8b/Christ_Church_Hall_Oxford.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/9/9c/Alnwick_Castle_01.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/3/3a/King%27s_Cross_Station_-_geograph.org.uk_-_902342.jpg"
+        "https://i.pinimg.com/736x/8a/23/ad/8a23add5277422eb1407ffccebee7b4d.jpg",
+        "https://i.pinimg.com/736x/66/47/10/664710c0911bdc3c7a3c3dbe6c42a930.jpg",
+        "https://i.pinimg.com/1200x/6a/d0/be/6ad0be37f6239b061405afbf2bb98b36.jpg"
       ];
 
       let idx = Math.floor(Math.random() * images.length);
@@ -163,4 +163,5 @@
     });
   </script>
 </body>
+
 </html>
