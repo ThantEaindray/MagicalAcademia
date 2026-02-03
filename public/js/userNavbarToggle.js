@@ -1,29 +1,45 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const loginButton = document.getElementById("loginButton");
-  const registerButton = document.getElementById("registerButton");
-  const profileButton = document.getElementById("profileButton");
-  const logoutButton = document.getElementById("logoutButton");
+document.addEventListener("DOMContentLoaded", () => {
+  const token = localStorage.getItem("token");
 
-  // Check if token exists in local storage
-  const token = localStorage.getItem("token"); // either get or set token or remove token
-  if (token) {
-    // Token exists, show profile button + log out button and hide login and register buttons
-    loginButton.classList.add("d-none");
-    registerButton.classList.add("d-none");
-    profileButton.classList.remove("d-none");
-    logoutButton.classList.remove("d-none");
-  } else {
-    // Token does not exist, show login and register buttons and hide profile and logout buttons
-    loginButton.classList.remove("d-none");
-    registerButton.classList.remove("d-none");
-    profileButton.classList.add("d-none");
-    logoutButton.classList.add("d-none");
+  // Your existing navbar IDs
+  const profileBtn = document.getElementById("profileButton");
+  const logoutBtn = document.getElementById("logoutButton");
+  const loginBtn = document.getElementById("loginButton");
+  const registerBtn = document.getElementById("registerButton");
+
+  // If no navbar on this page, stop
+  if (!profileBtn && !logoutBtn && !loginBtn && !registerBtn) return;
+
+  // Make Logout work everywhere
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", (e) => {
+      e.preventDefault(); // stops jumping to top because href="#"
+
+      localStorage.removeItem("token");
+      localStorage.removeItem("loggedInUserId");
+      localStorage.removeItem("user");
+
+      // Optional: if you store anything else, clear it too
+      // localStorage.clear(); // NOT recommended if you store other app data
+
+      window.location.href = "login.html";
+    });
   }
 
-  logoutButton.addEventListener("click", function () {
-    // Remove the token from local storage and redirect to index.html
-    localStorage.removeItem("token");
-    localStorage.removeItem("loggedInUserId");
-    window.location.href = "index.html";
-  });
+  // Toggle buttons
+  const hasToken = !!localStorage.getItem("token");
+
+  if (hasToken) {
+    profileBtn?.classList.remove("d-none");
+    logoutBtn?.classList.remove("d-none");
+
+    loginBtn?.classList.add("d-none");
+    registerBtn?.classList.add("d-none");
+  } else {
+    profileBtn?.classList.add("d-none");
+    logoutBtn?.classList.add("d-none");
+
+    loginBtn?.classList.remove("d-none");
+    registerBtn?.classList.remove("d-none");
+  }
 });

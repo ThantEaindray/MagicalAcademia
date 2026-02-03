@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem("loggedInUserId", responseData.userId);
 
         // after register, I send them straight to profile so it feels like auto-login
-        window.location.href = "profile.html";
+        window.location.href = "index.html";
       } else {
         warningCard.classList.remove("d-none");
         warningText.innerText = responseData.message || "Registration failed.";

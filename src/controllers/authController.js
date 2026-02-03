@@ -82,30 +82,30 @@ module.exports.register = (req, res, next) => {
 
 /*
 POST /api/login
-Login using email + password, return JWT token.
+Login using username + password, return JWT token.
 */
 module.exports.login = (req, res, next) => {
-  const email = req.body.email;
+  const username = req.body.username;
   const password = req.body.password;
 
   // 1) basic validation
-  if (!email || !password) {
+  if (!username || !password) {
     return res.status(400).json({
-      message: "email and password are required",
+      message: "username and password are required",
     });
   }
 
-  const data = { email };
+  const data = { username };
 
-  // 2) find user by email
-  authModel.selectUserByEmail(data, (err1, results1) => {
+  // 2) find user by username
+  authModel.selectUserByUsername(data, (err1, results1) => {
     if (err1) {
-      console.error("Failed login (selectUserByEmail):", err1);
+      console.error("Failed login (selectUserByUsername):", err1);
       return res.status(500).json(err1);
     }
 
     if (results1.length === 0) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid username or password" });
     }
 
     const user = results1[0];
@@ -113,7 +113,7 @@ module.exports.login = (req, res, next) => {
     // 3) bcrypt compare
     const match = bcrypt.compareSync(password, user.password_hash);
     if (!match) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid username or password" });
     }
 
     // 4) create token
@@ -126,6 +126,7 @@ module.exports.login = (req, res, next) => {
     });
   });
 };
+
 
 /*
 GET /api/me
