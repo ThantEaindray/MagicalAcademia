@@ -54,7 +54,7 @@ The challenge_id is inside the data object.
 */
 module.exports.selectChallengeById = (data, callback) => {
     const SQLSTATEMENT = `
-        SELECT points
+        SELECT points, multiplier
         FROM WellnessChallenges
         WHERE challenge_id = ?;
     `;
@@ -70,7 +70,7 @@ The user_id is inside the data object.
 */
 module.exports.selectUserById = (data, callback) => {
     const SQLSTATEMENT = `
-        SELECT user_id
+        SELECT user_id, points
         FROM Users
         WHERE user_id = ?;
     `;

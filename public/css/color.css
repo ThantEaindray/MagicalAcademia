@@ -1,19 +1,38 @@
 :root {
     /* ===== Purple Theme Colours ===== */
-    --custom-color: #6f42c1;          /* primary purple */
-    --custom-color-darker: #59339d;   /* hover / active */
-    --custom-color-light: #d6c9f2;    /* focus / highlights */
+    --custom-color: #6f42c1;
+    /* primary purple */
+    --custom-color-darker: #59339d;
+    /* hover / active */
+    --custom-color-light: #d6c9f2;
+    /* focus / highlights */
 
     --custom-color-rgb: 111, 66, 193;
     --custom-color-light-rgb: 214, 201, 242;
-
-    --custom-text-color: #ffffff;
 }
 
-/* ===== Page Background ===== */
+/* ===== Page Background ===== 
 body {
     background-color: #9c89eb;
+} */
+
+/* ===== Blurred Background Image ===== */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+
+  background-image: url("https://i.pinimg.com/736x/6d/4b/f6/6d4bf6b64cdd84e5f7756be9f19aee28.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  filter: blur(5px);        /* subtle blur */
+  transform: scale(1.05);   /* prevents blur edges */
+
+  z-index: -1;
 }
+
 
 /* ===== Accordion ===== */
 .accordion {
@@ -37,8 +56,20 @@ body {
 
 /* ===== Bootstrap Primary Background ===== */
 .bg-primary {
-    --bs-bg-opacity: 1;
-    background-color: rgba(var(--custom-color-rgb), var(--bs-bg-opacity)) !important;
+    background: linear-gradient(135deg,
+            var(--custom-color),
+            var(--custom-color-darker),
+            #3e1c78) !important;
+}
+
+.navbar .nav-link,
+.navbar .navbar-brand {
+    color: #ffffff !important;
+}
+
+.navbar.bg-primary,
+footer.bg-primary {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
 }
 
 /* ===== Form Elements ===== */

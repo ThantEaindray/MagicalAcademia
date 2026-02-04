@@ -11,33 +11,9 @@
     integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous" />
   <link href="css/style.css" rel="stylesheet" />
   <link href="css/color.css" rel="stylesheet" />
+  <link href="css/magictheme.css" rel="stylesheet">
 
   <title>Home | Magical Academia</title>
-
-  <style>
-    /* I added a simple hero section */
-    .hero-banner {
-      border-radius: 14px;
-      overflow: hidden;
-    }
-
-    .hero-img {
-      width: 100%;
-      height: 260px;
-      object-fit: cover;
-      display: block;
-      background: #c9f7d9;
-      /* fallback colour */
-    }
-
-    .hero-overlay {
-      background: rgba(0, 0, 0, 0.45);
-    }
-
-    .feature-card {
-      height: 100%;
-    }
-  </style>
 </head>
 
 <body>
@@ -101,11 +77,8 @@
 
       <!-- Hero -->
       <div class="hero-banner card shadow-sm border-0 mb-4">
-        <img id="homeHeroImg" class="hero-img"
-          src="https://i.pinimg.com/736x/a3/7e/6e/a37e6ebf239217e4738205164644d5e8.jpg"
-          alt="Magical castle hero image" />
-        <div class="card-img-overlay hero-overlay d-flex align-items-end">
-          <div class="text-white p-3">
+        <div class="hero-overlay d-flex align-items-end">
+          <div class="text-white p-4">
             <h1 class="h3 mb-1">Welcome to Magical Academia</h1>
             <p class="mb-2">
               Complete wellness challenges, earn points with multipliers, unlock spells, and compete in magical
@@ -118,6 +91,7 @@
           </div>
         </div>
       </div>
+
 
       <!-- Quick stats / info -->
       <div class="row g-3 mb-4">
@@ -156,18 +130,15 @@
       </div>
 
       <!-- Placeholder section (you can later swap to dynamic list) -->
-      <div class="row">
+      <div class="row latest-activities-header">
         <div class="col-12">
           <h2 class="h4 text-center mb-3">Latest Activities</h2>
-          <p class="text-center text-muted mb-4">
-            (this section can later show latest completions / top spells / leaderboard preview)
-          </p>
         </div>
       </div>
 
       <!-- Cards row -->
-      <div class="row g-3">
-        <div class="col-md-4">
+      <div class="row g-3 latest-cards">
+        <div class="col-12">
           <div class="card shadow-sm h-100">
             <div class="card-body">
               <h5 class="card-title">🔎 Explore Challenges</h5>
@@ -179,7 +150,7 @@
           </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-12">
           <div class="card shadow-sm h-100">
             <div class="card-body">
               <h5 class="card-title">🛒 Spell Shop</h5>
@@ -191,7 +162,7 @@
           </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-12">
           <div class="card shadow-sm h-100">
             <div class="card-body">
               <h5 class="card-title">📈 Competitions & Leaderboards</h5>
@@ -230,10 +201,9 @@
       if (!img) return;
 
       const images = [
-        "https://i.pinimg.com/736x/6d/4b/f6/6d4bf6b64cdd84e5f7756be9f19aee28.jpg",
-        "https://i.pinimg.com/1200x/6d/59/cf/6d59cfc01d7e5174b6aabcf540fa5812.jpg",
         "https://i.pinimg.com/736x/93/42/44/934244a947d2e80617218908c10bda8b.jpg",
-        "https://i.pinimg.com/1200x/cd/24/0f/cd240f50e27c5c75e30b8416e57b9334.jpg"
+        "https://i.pinimg.com/736x/6d/4b/f6/6d4bf6b64cdd84e5f7756be9f19aee28.jpg",
+        "https://i.pinimg.com/736x/8a/23/ad/8a23add5277422eb1407ffccebee7b4d.jpg"
       ];
 
       let idx = Math.floor(Math.random() * images.length);

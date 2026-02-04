@@ -1,0 +1,67 @@
+/* ===== Page Header Text: Force White ===== */
+main h1.display-4,
+main h1.display-5 {
+  color: #59339d !important;
+}
+
+/* subtitle under the header */
+main p.text-muted {
+  color: #000000 !important;
+}
+
+/* ===== Profile Page Theme ===== */
+
+.page-header h1 {
+  color: #ffffff;
+}
+
+.page-header p {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Glass card like your other pages */
+.profile-card {
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 14px;
+}
+
+/* Avatar bubble */
+.profile-avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 1.4rem;
+
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Inner tiles */
+.mini-card {
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.35);
+  border: 0.5px solid rgba(255, 255, 255, 0.25);
+}
+
+.mini-label {
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+.mini-value {
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+/* Register hero image: keep it nice and not huge */
+.hero-img {
+  width: 100%;
+  height: 220px;          /* adjust: 180–260 looks good */
+  object-fit: cover;      /* crops nicely instead of stretching */
+  display: block;
+}

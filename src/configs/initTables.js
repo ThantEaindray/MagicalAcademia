@@ -1,4 +1,5 @@
 const pool = require('../services/db');
+const bcrypt = require("bcrypt"); // same as bcryptMiddleware.js
 
 // Initialise tables and add test data
 
@@ -189,11 +190,63 @@ INSERT INTO UserCompetitionEntries (competition_id, user_id, score) VALUES
 (5, 1, 85);
 `;
 
-pool.query(SQLSTATEMENT, (error, results, fields) => {
+pool.query(SQLSTATEMENT, (error) => {
   if (error) {
-    console.error('Error creating tables:', error);
-  } else {
-    console.log('Tables created successfully');
+    console.error("Error creating tables:", error);
+    process.exit(1);
   }
-  process.exit();
+
+  console.log("Tables created successfully");
+
+  // Demo passwords (DB stores only hash, not plaintext)
+  const adminPassword = "Admin";
+  const userPassword = "User";
+
+  // Hash + update passwords after seed insert (fast, no manual hash copy-paste)
+  bcrypt.hash(adminPassword, 10, (errA, adminHash) => {
+    if (errA) {
+      console.error("Error hashing admin password:", errA);
+      process.exit(1);
+    }
+
+    bcrypt.hash(userPassword, 10, (errU, userHash) => {
+      if (errU) {
+        console.error("Error hashing user password:", errU);
+        process.exit(1);
+      }
+
+      // 1) admin gets adminPassword
+      pool.query(
+        `UPDATE Users SET password_hash = ? WHERE username = 'admin'`,
+        [adminHash],
+        (err1) => {
+          if (err1) {
+            console.error("Error updating admin password:", err1);
+            process.exit(1);
+          }
+
+          // 2) all test users get userPassword
+          pool.query(
+            `UPDATE Users
+             SET password_hash = ?
+             WHERE username IN ('socuser321','wellnessKing','avaMage',
+             'gryffinRiser','ravenPlanner','slythGrind')`,
+            [userHash],
+            (err2) => {
+              if (err2) {
+                console.error("Error updating user passwords:", err2);
+                process.exit(1);
+              }
+
+              console.log("Demo logins ready:");
+              console.log("ADMIN  -> username: admin      password:", adminPassword);
+              console.log("USERS  -> password for all seeded users:", userPassword);
+
+              process.exit(0);
+            }
+          );
+        }
+      );
+    });
+  });
 });

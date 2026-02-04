@@ -1,9 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
   const heroImages = [
-    "https://upload.wikimedia.org/wikipedia/commons/9/9c/Alnwick_Castle_01.jpg", // Hogwarts-ish castle
-    "https://upload.wikimedia.org/wikipedia/commons/3/3a/King%27s_Cross_Station_-_geograph.org.uk_-_902342.jpg", // King's Cross vibe
-    "https://upload.wikimedia.org/wikipedia/commons/8/8b/Christ_Church_Hall_Oxford.jpg", // Great Hall vibe
-    "https://upload.wikimedia.org/wikipedia/commons/7/7c/Glencoe-Scotland.jpg" // Scottish landscape vibe
+    "https://i.pinimg.com/736x/93/42/44/934244a947d2e80617218908c10bda8b.jpg",
+    "https://i.pinimg.com/736x/6d/4b/f6/6d4bf6b64cdd84e5f7756be9f19aee28.jpg",
+    "https://i.pinimg.com/736x/8a/23/ad/8a23add5277422eb1407ffccebee7b4d.jpg"
   ];
 
   const heroImg = document.getElementById("heroImg");
@@ -15,7 +14,6 @@ document.addEventListener("DOMContentLoaded", function () {
       heroImg.src = heroImages[0];
     };
   }
-
 
   const signupForm = document.getElementById("signupForm");
   const warningCard = document.getElementById("warningCard");

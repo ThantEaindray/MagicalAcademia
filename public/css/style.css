@@ -1,12 +1,9 @@
-body
-{
-    font-family: sans-serif;
-    background-color: #dcffef;
+body {
+  font-family: sans-serif;
 }
 
-main
-{
-    min-height: calc(100vh - 56px - 56px);
+main {
+  min-height: calc(100vh - 56px - 56px);
 }
 
 .logo {
@@ -14,6 +11,72 @@ main
   height: 40px;
 }
 
-.card {
+/* ===== Default Card Border ===== */
+.card{
   border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
+
+/* ===== Hero banner: same glass card style ===== */
+.hero-banner {
+  border-radius: 14px;
+  padding: 1.5rem;
+
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* remove dark overlay effect */
+.hero-overlay {
+  background: transparent;
+}
+
+/* hero text should be dark like other cards */
+.hero-banner .text-white {
+  color: #2b2b2b !important;
+}
+
+/* ===== Latest Activities Cards: compact horizontal layout ===== */
+.latest-cards .card-body {
+  display: flex;
+  align-items: center;        /* vertically center content */
+  justify-content: space-between;
+  gap: 1rem;
+
+  padding: 1.25rem 1.5rem;
+}
+
+/* text group */
+.latest-cards .card-body h5,
+.latest-cards .card-body p {
+  margin: 0;
+}
+
+/* wrap text nicely */
+.latest-cards .card-body .card-text {
+  margin-top: 0.25rem;
+  max-width: 600px;           /* prevents card from stretching too wide */
+}
+
+/* Go button: right side, compact */
+.latest-cards .card-body .btn {
+  flex-shrink: 0;             /* don’t let button stretch */
+  padding: 6px 14px;
+  height: fit-content;
+}
+
+/* Latest Activities title + subtitle color */
+.latest-activities-header h2 {
+  color: #ffffff;          /* change to any colour you want */
+}
+
+.latest-activities-header p {
+  color: rgba(255, 255, 255, 0.85);
+}
+

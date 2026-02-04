@@ -15,6 +15,9 @@ router.get("/spells", gamificationController.getAllSpells);
 // GET /game/users/:user_id/spells
 router.get("/users/:user_id/spells", gamificationController.getUserSpells);
 
+// GET /game/users/:user_id/completions
+router.get("/users/:user_id/completions", gamificationController.getUserCompletions);
+
 // POST /game/users/:user_id/buy-spell
 router.post("/users/:user_id/buy-spell", gamificationController.buySpell);
 

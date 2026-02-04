@@ -169,9 +169,18 @@ module.exports.createChallengeCompletion = (req, res, next) => {
             });
         }
 
-        // points to be rewarded for this challenge
-        // => database returns an array, so I take the first row and extract the points value to reward the user
-        const rewardPoints = results1[0].points;
+        // get the base points for this challenge
+        // database returns an array, so we take the first row
+        // convert to number and default to 0 if missing
+        const basePoints = Number(results1[0].points ?? 0);
+
+        // get the multiplier for this challenge
+        // used to boost the base points
+        // default to 1.0 if no multiplier is set
+        const multiplier = Number(results1[0].multiplier ?? 1.0);
+
+        // calculate final reward using multiplier
+        const rewardPoints = Math.round(basePoints * multiplier);
 
         // 4) check if user exists
         // => This checks whether the user exists before creating a completion record, 
@@ -189,6 +198,8 @@ module.exports.createChallengeCompletion = (req, res, next) => {
                     message: "User not found"
                 });
             }
+
+            const pointsBefore = Number(results2[0].points ?? 0);
 
             // 5) insert completion record
             const completionData = {
@@ -224,8 +235,13 @@ module.exports.createChallengeCompletion = (req, res, next) => {
                         complete_id: completion_id,
                         challenge_id: challenge_id,
                         user_id: user_id,
-                        details: details || null
+                        details: details || null,
                         // I use details || null so optional input is stored as NULL when not provided.
+                        base_points: basePoints,
+                        multiplier: multiplier,
+                        reward_points: rewardPoints,   // Base × Multiplier
+                        points_earned: rewardPoints,   // what user actually gains
+                        points_after: pointsBefore + rewardPoints
                     });
                 });
             });

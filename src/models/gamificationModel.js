@@ -179,3 +179,26 @@ module.exports.addPointsToUser = (data, callback) => {
 
     pool.query(SQLSTATEMENT, VALUES, callback);
 };
+
+/* Get user's completed challenges */
+module.exports.selectUserCompletions = (data, callback) => {
+  const SQLSTATEMENT = `
+    SELECT 
+      uc.completion_id,
+      uc.challenge_id,
+      uc.user_id,
+      uc.details,
+      uc.completed_at,
+      wc.description,
+      wc.points AS base_points,
+      wc.multiplier,
+      wc.creator_id
+    FROM UserCompletions uc
+    INNER JOIN WellnessChallenges wc ON uc.challenge_id = wc.challenge_id
+    WHERE uc.user_id = ?
+    ORDER BY uc.completed_at DESC;
+  `;
+
+  const VALUES = [data.user_id];
+  pool.query(SQLSTATEMENT, VALUES, callback);
+};

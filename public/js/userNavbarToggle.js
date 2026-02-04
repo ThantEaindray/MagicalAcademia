@@ -18,10 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.removeItem("token");
       localStorage.removeItem("loggedInUserId");
       localStorage.removeItem("user");
-
-      // Optional: if you store anything else, clear it too
-      // localStorage.clear(); // NOT recommended if you store other app data
-
       window.location.href = "login.html";
     });
   }

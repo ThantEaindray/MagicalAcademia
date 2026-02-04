@@ -33,3 +33,19 @@ module.exports.verifyToken = (req, res, next) => {
     return res.status(401).json({ message: "Invalid or expired token" });
   }
 };
+
+/*
+Check if the logged-in user is an admin.
+This middleware assumes verifyToken has already run
+and req.user is available.
+*/
+module.exports.requireAdmin = (req, res, next) => {
+  // If user info is missing or role is not admin, block access
+  const role = String(req.user?.role || "").toUpperCase();
+  if (role !== "ADMIN") {
+    return res.status(403).json({ message: "Access denied. Admin only." });
+  }
+
+  // User is admin, allow request to continue
+  next();
+};

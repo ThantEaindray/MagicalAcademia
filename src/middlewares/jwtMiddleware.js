@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////
 // REQUIRE DOTENV MODULE
 //////////////////////////////////////////////////////
-require("dotenv").config(); 
+require("dotenv").config();
 // to get access to these in dotenv file
 // JWT_SECRET_KEY=your-secret-key
 // JWT_EXPIRES_IN=15m
@@ -25,6 +25,7 @@ const tokenAlgorithm = process.env.JWT_ALGORITHM;
 module.exports.generateToken = (req, res, next) => {
   const payload = {
     userId: res.locals.userId, // response stores the userId in the local variable
+    role: res.locals.role,
     timestamp: new Date()
   };
 
@@ -61,16 +62,16 @@ module.exports.sendToken = (req, res, next) => {
 //////////////////////////////////////////////////////
 module.exports.verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
-// authentication header
+  // authentication header
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     // authorization type should be bearer token or
     // choose header then type key = authorization and value = Bearer token
-    
+
     return res.status(401).json({ error: 'No token provided' });
   }
 
-  const token = authHeader.substring(7); 
+  const token = authHeader.substring(7);
   // (after Bearer) after the 7th character, token characters
 
   if (!token) {
@@ -83,6 +84,7 @@ module.exports.verifyToken = (req, res, next) => {
     }
 
     res.locals.userId = decoded.userId; // cuz userId: res.locals.userId
+    res.locals.role = decoded.role;
     res.locals.tokenTimestamp = decoded.timestamp;
 
     next();

@@ -85,13 +85,15 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="card-body d-flex flex-column">
             <h5 class="card-title">${title}</h5>
             <p class="card-text text-muted">${description}</p>
-
             <div class="small text-muted mb-2">
-              <div><strong>Base Points:</strong> ${points}</div>
-              <div><strong>Multiplier:</strong> x${multiplier.toFixed(2)}</div>
-              <div><strong>Reward:</strong> ${finalReward} pts</div>
-              <div><strong>Created by:</strong> Wizard #${creatorId}</div>
-            </div>
+  <div><strong>Base Points:</strong> ${points}</div>
+  <div><strong>Multiplier:</strong> x${multiplier.toFixed(2)}</div>
+  <div>
+    <strong>Reward Points:</strong>
+    ${points} × ${multiplier.toFixed(2)} = <b>${finalReward}</b> pts
+  </div>
+  <div><strong>Created by:</strong> Wizard #${creatorId}</div>
+</div>
 
             <label class="form-label mt-2 small">Completion notes (optional)</label>
             <textarea class="form-control form-control-sm mb-2" rows="2"
@@ -126,7 +128,38 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("POST complete status:", status, data);
 
         if (status === 201 || status === 200) {
-          alert("Challenge completed! Points earned ✨");
+          const earned = data?.points_earned ?? "N/A";
+          const left = data?.points_after ?? "N/A";
+
+          const modalBody = document.getElementById("completionModalBody");
+          if (modalBody) {
+            modalBody.innerHTML = `
+    <p class="mb-2">Points earned: <b>${earned}</b></p>
+    <p class="mb-0">Points left: <b>${left}</b></p>
+  `;
+
+            const modalEl = document.getElementById("completionModal");
+            if (modalEl && window.bootstrap) {
+              const modal = new bootstrap.Modal(modalEl);
+              modal.show();
+            } else {
+              // Fallback if bootstrap JS missing
+              alert(
+                `Challenge completed! ✨\n\n` +
+                `Points earned: ${earned}\n` +
+                `Points left: ${left}`
+              );
+            }
+          } else {
+            // Fallback if modal HTML not found
+            alert(
+              `Challenge completed! ✨\n\n` +
+              `Points earned: ${earned}\n` +
+              `Points left: ${left}`
+            );
+          }
+
+
           const box = document.getElementById(`details-${challengeId}`);
           if (box) box.value = "";
         } else {
