@@ -11,11 +11,6 @@
     --custom-color-light-rgb: 214, 201, 242;
 }
 
-/* ===== Page Background ===== 
-body {
-    background-color: #9c89eb;
-} */
-
 /* ===== Blurred Background Image ===== */
 body::before {
   content: "";
