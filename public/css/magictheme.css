@@ -6,7 +6,7 @@ main h1.display-5 {
 
 /* subtitle under the header */
 main p.text-muted {
-  color: #000000 !important;
+  color: #59339d !important;
 }
 
 /* ===== Profile Page Theme ===== */
@@ -58,10 +58,11 @@ main p.text-muted {
   font-size: 1.05rem;
 }
 
-/* Register hero image: keep it nice and not huge */
 .hero-img {
   width: 100%;
-  height: 220px;          /* adjust: 180–260 looks good */
-  object-fit: cover;      /* crops nicely instead of stretching */
+  height: 100%;
+  min-height: 220px;
+  max-height: 260px;
+  object-fit: cover;
   display: block;
 }

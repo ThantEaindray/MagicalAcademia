@@ -1,5 +1,5 @@
 body {
-  font-family: sans-serif;
+  font-family: 'Times New Roman', Times, serif;
 }
 
 main {
@@ -12,7 +12,7 @@ main {
 }
 
 /* ===== Default Card Border ===== */
-.card{
+.card {
   border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.35);
   background-color: rgba(255, 255, 255, 0.5);
@@ -45,7 +45,8 @@ main {
 /* ===== Latest Activities Cards: compact horizontal layout ===== */
 .latest-cards .card-body {
   display: flex;
-  align-items: center;        /* vertically center content */
+  align-items: center;
+  /* vertically center content */
   justify-content: space-between;
   gap: 1rem;
 
@@ -61,22 +62,24 @@ main {
 /* wrap text nicely */
 .latest-cards .card-body .card-text {
   margin-top: 0.25rem;
-  max-width: 600px;           /* prevents card from stretching too wide */
+  max-width: 600px;
+  /* prevents card from stretching too wide */
 }
 
 /* Go button: right side, compact */
 .latest-cards .card-body .btn {
-  flex-shrink: 0;             /* don’t let button stretch */
+  flex-shrink: 0;
+  /* don’t let button stretch */
   padding: 6px 14px;
   height: fit-content;
 }
 
 /* Latest Activities title + subtitle color */
 .latest-activities-header h2 {
-  color: #ffffff;          /* change to any colour you want */
+  color: #ffffff;
+  /* change to any colour you want */
 }
 
 .latest-activities-header p {
   color: rgba(255, 255, 255, 0.85);
 }
-
