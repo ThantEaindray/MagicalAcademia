@@ -188,6 +188,9 @@ INSERT INTO UserCompetitionEntries (competition_id, user_id, score) VALUES
 (4, 2, 70),
 (4, 5, 65),
 (5, 1, 85);
+
+ALTER TABLE UserCompetitionEntries
+ADD COLUMN reward_claimed TINYINT NOT NULL DEFAULT 0;
 `;
 
 pool.query(SQLSTATEMENT, (error) => {

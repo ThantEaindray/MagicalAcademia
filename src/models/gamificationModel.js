@@ -202,3 +202,33 @@ module.exports.selectUserCompletions = (data, callback) => {
   const VALUES = [data.user_id];
   pool.query(SQLSTATEMENT, VALUES, callback);
 };
+
+/* Get competition base reward + name (for multiplier mapping) */
+module.exports.selectCompetitionRewardInfo = (data, callback) => {
+  const SQLSTATEMENT = `
+    SELECT name, reward_points
+    FROM Competitions
+    WHERE competition_id = ?;
+  `;
+  pool.query(SQLSTATEMENT, [data.competition_id], callback);
+};
+
+/* Check user's entry + reward_claimed */
+module.exports.selectUserEntryForCompetition = (data, callback) => {
+  const SQLSTATEMENT = `
+    SELECT entry_id, reward_claimed
+    FROM UserCompetitionEntries
+    WHERE competition_id = ? AND user_id = ?;
+  `;
+  pool.query(SQLSTATEMENT, [data.competition_id, data.user_id], callback);
+};
+
+/* Mark reward as claimed */
+module.exports.markCompetitionRewardClaimed = (data, callback) => {
+  const SQLSTATEMENT = `
+    UPDATE UserCompetitionEntries
+    SET reward_claimed = 1
+    WHERE competition_id = ? AND user_id = ?;
+  `;
+  pool.query(SQLSTATEMENT, [data.competition_id, data.user_id], callback);
+};

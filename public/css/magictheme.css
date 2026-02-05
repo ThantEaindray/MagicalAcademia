@@ -1,3 +1,138 @@
+/* =========================
+   Competitions flip cards
+   ========================= */
+.comp-flip-back .ms-3 {
+  opacity: 0.9;
+}
+
+/* The outer card sets the size */
+.comp-flip-card {
+  position: relative;
+  width: 100%;
+  min-height: 420px;
+  perspective: 1000px;
+}
+
+/* Inner wrapper flips */
+.comp-flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.7s;
+  transform-style: preserve-3d;
+}
+
+.comp-flip-card.is-flipped .comp-flip-inner {
+  transform: rotateY(180deg);
+}
+
+/* Front + back must sit on top of each other */
+.comp-flip-front,
+.comp-flip-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Back side rotated */
+.comp-flip-back {
+  transform: rotateY(180deg);
+}
+
+/* Image sizing */
+.comp-card-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.comp-flip-back .card-body {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 100%;
+  padding-right: 6px;
+}
+
+.comp-flip-back .card-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.comp-flip-back .card-body::-webkit-scrollbar-thumb {
+  background: rgba(120, 80, 200, 0.6);
+  border-radius: 10px;
+}
+
+/* =============================
+   Expand Card On Hover
+============================= */
+
+/* Image stays fixed */
+.feature-card-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  transition: filter 0.3s ease;
+}
+
+/* Card animation */
+.feature-card {
+  transition: all 0.35s ease;
+  overflow: hidden;
+}
+
+/* Card body starts compact */
+.feature-card .card-body {
+  max-height: 70px;
+  /* only enough space for title */
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+  text-align: center;
+}
+
+/* Hide description initially */
+.feature-card .card-text {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+/* Expand card body when hover */
+.feature-card:hover .card-body {
+  max-height: 200px;
+  /* expands to reveal text */
+}
+
+/* Reveal text */
+.feature-card:hover .card-text {
+  opacity: 1;
+  transform: translateY(0);
+  text-align: center;
+}
+
+/* Lift card slightly */
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* Optional: darken image on hover */
+.feature-card:hover .feature-card-img {
+  filter: brightness(0.8);
+}
+
+/* Hide description by default */
+.feature-card .card-title {
+  text-align: center;
+}
+
 /* ===== Page Header Text: Force White ===== */
 main h1.display-4,
 main h1.display-5 {
@@ -6,7 +141,7 @@ main h1.display-5 {
 
 /* subtitle under the header */
 main p.text-muted {
-  color: #59339d !important;
+  color: #000000 !important;
 }
 
 /* ===== Profile Page Theme ===== */
