@@ -74,12 +74,7 @@ main {
   height: fit-content;
 }
 
-/* Latest Activities title + subtitle color */
+/* Latest Activities title */
 .latest-activities-header h2 {
-  color: #ffffff;
-  /* change to any colour you want */
-}
-
-.latest-activities-header p {
-  color: rgba(255, 255, 255, 0.85);
+  color: #000000;
 }
