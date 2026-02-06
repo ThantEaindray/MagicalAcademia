@@ -27,6 +27,24 @@ document.addEventListener("DOMContentLoaded", () => {
     warningCard.classList.add("d-none");
   };
 
+  function showCompetitionModal(title, html) {
+    const titleEl = document.getElementById("competitionModalTitle");
+    const bodyEl = document.getElementById("competitionModalBody");
+    const modalEl = document.getElementById("competitionModal");
+
+    if (titleEl) titleEl.textContent = title;
+    if (bodyEl) bodyEl.innerHTML = html;
+
+    if (modalEl && window.bootstrap) {
+      const modal = new bootstrap.Modal(modalEl);
+      modal.show();
+    } else {
+      // fallback if bootstrap JS missing
+      alert(`${title}\n\n${bodyEl ? bodyEl.innerText : ""}`);
+    }
+  }
+
+
   // image mapping based on competition name
   function getCompetitionImage(name) {
     const n = (name || "").toLowerCase();
@@ -257,28 +275,48 @@ document.addEventListener("DOMContentLoaded", () => {
   // body: { user_id }
   // ============================
   function joinCompetition(competitionId) {
-    hideWarning();
+  hideWarning(); // if you already have this
+  // optional: also hide any old banner alert
+  const banner = document.getElementById("warningBox");
+  if (banner) banner.classList.add("d-none");
 
-    if (!competitionId) {
-      showWarning("Invalid competition ID.");
-      return;
-    }
+  const payload = { user_id: userId }; // your backend expects this
 
-    fetchMethod(
-      `${GAME_API}/competitions/${competitionId}/join`,
-      (status, data) => {
-        console.log("POST join:", status, data);
+  fetchMethod(
+    `${currentUrl}/api/game/competitions/${competitionId}/join`,
+    (status, data) => {
+      console.log("JOIN status:", status, data);
 
-        if (status === 200 || status === 201) {
-          alert("Joined competition!");
-        } else {
-          showWarning(data?.message || "Unable to join competition.");
-        }
-      },
-      "POST",
-      { user_id: userId }
-    );
-  }
+      // ✅ Joined OK
+      if (status === 201 || status === 200) {
+        const msg = data?.message || "Joined competition!";
+        showCompetitionModal(
+          "Joined! 🏆",
+          `<p class="mb-0">${msg}</p>`
+        );
+
+        // optional refresh (so UI updates)
+        // loadCompetitions();
+        return;
+      }
+
+      // ✅ Already joined (your backend might return 409, 400, or 200-with-message)
+      // We’ll just show whatever message backend gives.
+      const errMsg = data?.message || "Unable to join competition.";
+
+      // If you want “Already joined” to look nicer:
+      const title =
+        errMsg.toLowerCase().includes("already") ? "Already joined 🙂" : "Oops ❗";
+
+      showCompetitionModal(
+        title,
+        `<p class="mb-0">${errMsg}</p>`
+      );
+    },
+    "POST",
+    payload
+  );
+}
 
   function viewLeaderboard(competitionId) {
 

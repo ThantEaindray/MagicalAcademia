@@ -19,14 +19,38 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const showWarning = (msg) => {
+    if (!warningText || !warningCard) return;
     warningText.innerText = msg;
     warningCard.classList.remove("d-none");
   };
 
   const hideWarning = () => {
+    if (!warningText || !warningCard) return;
     warningText.innerText = "";
     warningCard.classList.add("d-none");
   };
+
+  // ✅ Bootstrap modal used for "Purchased!" + other messages
+  function showShopModal(title, html) {
+    const titleEl = document.getElementById("shopModalTitle");
+    const bodyEl = document.getElementById("shopModalBody");
+    const modalEl = document.getElementById("shopModal");
+
+    if (!modalEl || !window.bootstrap || !titleEl || !bodyEl) {
+      // fallback if modal not present / bootstrap missing
+      const textFallback = html
+        .replace(/<[^>]*>/g, "")
+        .replace(/\s+\n/g, "\n")
+        .trim();
+      alert(`${title}\n\n${textFallback}`);
+      return;
+    }
+
+    titleEl.textContent = title;
+    bodyEl.innerHTML = html;
+
+    new bootstrap.Modal(modalEl).show();
+  }
 
   let ownedSpellIds = new Set();
 
@@ -37,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function loadShop() {
     hideWarning();
 
-    fetchMethod(currentUrl + "/api/game/spells", (status, data) => {
+    fetchMethod(`${currentUrl}/api/game/spells`, (status, data) => {
       console.log("GET /game/spells", status, data);
 
       if (status !== 200) {
@@ -70,23 +94,25 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      wizardName.innerText = data.username ?? `Wizard #${data.user_id}`;
-      wizardPoints.innerText = data.points ?? 0;
+      if (wizardName) wizardName.innerText = data.username ?? `Wizard #${data.user_id}`;
+      if (wizardPoints) wizardPoints.innerText = data.points ?? 0;
 
       const spells = Array.isArray(data.spells) ? data.spells : [];
-      ownedSpellIds = new Set(spells.map(s => s.spell_id));
+      ownedSpellIds = new Set(spells.map((s) => Number(s.spell_id)));
 
-      inventoryHint.innerText =
-        spells.length === 0
-          ? "You have no spells yet. Buy your first spell below!"
-          : `You own ${spells.length} spell(s).`;
+      if (inventoryHint) {
+        inventoryHint.innerText =
+          spells.length === 0
+            ? "You have no spells yet. Buy your first spell below!"
+            : `You own ${spells.length} spell(s).`;
+      }
 
-      // Update button states after inventory loads
       updateOwnedButtons();
     }, "GET");
   }
 
   function renderSpells(spells) {
+    if (!spellList) return;
     spellList.innerHTML = "";
 
     if (spells.length === 0) {
@@ -99,11 +125,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     spells.forEach((s) => {
-      // from model: Spells table columns include spell_id, name, effect, cost_points :contentReference[oaicite:4]{index=4}
-      const id = s.spell_id;
-      const name = s.name;
-      const effect = s.effect;
-      const cost = Number(s.cost_points);
+      const id = Number(s.spell_id);
+      const name = s.name ?? "Unknown Spell";
+      const effect = s.effect ?? "";
+      const cost = Number(s.cost_points ?? 0);
 
       const col = document.createElement("div");
       col.className = "col-md-4";
@@ -135,7 +160,6 @@ document.addEventListener("DOMContentLoaded", () => {
       spellList.appendChild(col);
     });
 
-    // Apply owned state if inventory already loaded
     updateOwnedButtons();
   }
 
@@ -157,71 +181,62 @@ document.addEventListener("DOMContentLoaded", () => {
   // POST /game/users/:user_id/buy-spell
   // body: { spell_id }
   // ----------------------------
-  function showNotEnoughPointsModal(spellName, cost, currentPoints) {
-  const need = Math.max(0, Number(cost) - Number(currentPoints));
-
-  const body = document.getElementById("pointsModalBody");
-  const title = document.getElementById("pointsModalTitle");
-
-  if (title) title.innerText = `Not enough points 😭`;
-  if (body) {
-    body.innerHTML = `
-      <p class="mb-2"><strong>Spell:</strong> ${spellName}</p>
-      <p class="mb-2">Your points: <b>${currentPoints}</b></p>
-      <p class="mb-0">You need: <b>${need}</b> more points (Cost: ${cost})</p>
-    `;
-  }
-
-  const modalEl = document.getElementById("pointsModal");
-  if (modalEl && window.bootstrap) {
-    new bootstrap.Modal(modalEl).show();
-  } else {
-    // fallback if bootstrap missing
-    alert(
-      `Not enough points 😭\n\n` +
-      `Spell: ${spellName}\n` +
-      `Your points: ${currentPoints}\n` +
-      `Cost: ${cost}\n` +
-      `Need: ${need} more points`
-    );
-  }
-}
-
   function buySpell(spellId, spellName, cost) {
   hideWarning();
 
-  // current points shown on UI (safe convert)
+  // ✅ FRONTEND CHECK: show same shop modal if not enough points
   const currentPoints = Number(wizardPoints?.innerText ?? 0);
+  const numericCost = Number(cost);
+
+  if (currentPoints < numericCost) {
+    const need = numericCost - currentPoints;
+
+    showShopModal(
+      "Not enough points 😭",
+      `
+        <p class="mb-2"><strong>Spell:</strong> ${spellName}</p>
+        <p class="mb-2">Your points: <b>${currentPoints}</b></p>
+        <p class="mb-0">You need <b>${need}</b> more points (Cost: ${numericCost})</p>
+      `
+    );
+    return; // stop here, don't call backend
+  }
 
   const payload = { spell_id: Number(spellId) };
 
   fetchMethod(
     `${currentUrl}/api/game/users/${userId}/buy-spell`,
     (status, data) => {
-      console.log("POST buy-spell", status, data);
+      console.log("POST buy spell", status, data);
 
-      if (status === 200) {
-        alert("Spell purchased successfully 🪄");
+      if (status === 200 || status === 201) {
+        const msg = data?.message || "Spell purchased successfully ✨";
+        const spent = data?.points_spent ?? data?.cost_points ?? cost ?? null;
+        const left = data?.points_after ?? null;
+
+        showShopModal(
+          "Purchased! ✨",
+          `
+            <p class="mb-2">${msg}</p>
+            ${spent !== null ? `<p class="mb-1">Points spent: <b>${spent}</b></p>` : ""}
+            ${left !== null ? `<p class="mb-0">Points left: <b>${left}</b></p>` : ""}
+          `
+        );
+
         loadInventoryAndPoints();
+        loadShop();
         return;
       }
 
-      // ✅ show modal ONLY for "not enough points"
-      const msg = String(data?.message || "");
-
-      if (status === 400 && msg.toLowerCase().includes("not enough")) {
-        showNotEnoughPointsModal(spellName, cost, currentPoints);
-        return;
-      }
-
-      // fallback for other errors (409 owned, 404 etc.)
-      showWarning(data?.message || "Failed to buy spell.");
+      showShopModal(
+        "Oops ❗",
+        `<p class="mb-0">${data?.message || "Unable to purchase spell."}</p>`
+      );
     },
     "POST",
     payload
   );
 }
-
 
   // init
   loadShop();
