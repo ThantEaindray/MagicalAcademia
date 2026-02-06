@@ -1,8 +1,17 @@
-## Intro
+## 🧙‍♂️ Magical Academia – Backend Web Development (CA2)
 ---
-A wellness challenge tracking system where users can create wellness challenges and complete them to earn points. Each challenge is owned by its creator, who has exclusive rights to update or delete it. When a user completes a challenge, a completion record is stored and points are automatically rewarded to the user.
 
-The system is extended with **gamification features inspired by a magical academy theme**, including points multipliers, spell rewards, competitions, and leaderboards. It is built using a structured backend architecture with Node.js, Express, and MySQL.
+## 📌 Project Overview
+---
+Magical Academia is a **Wellness Challenge Web Application** built using **Node.js, Express, and MySQL**.  
+This project extends the backend developed in CA1 by integrating a frontend and adding authentication, validation, and gamification features.
+
+Users can:
+- Register and log in securely
+- Complete wellness challenges to earn points
+- Spend points on spells
+- Join competitions
+- View personal progress and user data
 
 ## Sections
 ---
@@ -142,25 +151,58 @@ These features are implemented in a modular way and are ready for frontend integ
 
 ### 4 - API Documentation
 ---
+#### Authentication Routes
+
+POST /register  
+
+- Register a new user.
+- Password is hashed using bcrypt.
+```json
+{
+  "username": "ava",
+  "email": "ava@example.com",
+  "password": "password123"
+}
+```
+POST /login
+
+- Authenticate user and return a JWT token.
+```json
+{
+  "username": "ava",
+  "password": "password123"
+}
+```
+GET /me
+
+- Retrieve the currently logged-in user.
+- Requires valid JWT token in Authorization header.
 
 #### User Routes
 
 GET /users  
+
 - Retrieve all users.
+- Admin only (JWT + role check required).
 
 GET /users/:user_id  
+
 - Retrieve a single user by ID.
 
-POST /users  
+POST /users
+
 - Create a new user.
 ```json
 {
-  "username": "ava"
+  "username": "ava",
+  "email": "ava@example.com",
+  "password": "password123"
 }
 ```
 PUT /users/:user_id
 
-- Update a user's username and points.
+- Update a user's details.
+- Points are validated using middleware (must be non-negative).
 ```json
 {
   "username": "ava_updated",
@@ -190,8 +232,8 @@ POST /challenges
 
 POST /challenges/:challenge_id
 
-- Create a completion record for a user attempting a challenge, and award points.
-Note: Although the endpoint is under `/challenges`, this operation represents a challenge completion that is inherently linked to a specific challenge.
+- Create a completion record for a user attempting a challenge.
+- Awards points to the user.
 ```json
 {
   "user_id": 1,
@@ -225,14 +267,28 @@ GET /game/users/:user_id/spells
 
 - Retrieve a user’s unlocked spell inventory.
 
+GET /game/users/:user_id/completions
+
+- Retrieve all challenges completed by a user.
+
+GET /game/users/:user_id/competitions
+
+- Retrieve all competitions joined by a user.
+
 POST /game/users/:user_id/buy-spell
 
 - Purchase a spell using points.
+- Purchase a spell using points.
+- Backend validates:
+- Sufficient points
+- Spell not already owned
 ```json
 {
   "spell_id": 5
 }
 ```
+
+#### Competition Routes
 
 GET /game/competitions
 
@@ -241,6 +297,7 @@ GET /game/competitions
 POST /game/competitions/:competition_id/join
 
 - Join a competition and receive reward points.
+- Backend prevents duplicate joins.
 ```json
 {
   "user_id": 3
