@@ -65,26 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return "Easy";
   }
 
-  // Gamification multiplier (scales competition points)
-  function getCompetitionMultiplier(name) {
-    const level = getCompetitionDifficulty(name);
-
-    if (level === "Easy") return 100;
-    if (level === "Medium") return 1000;
-    if (level === "Hard") return 10000;
-
-    return 100;
-  }
-
-  // Base reward before multiplier (simple by difficulty)
-  function getBaseRewardPoints(name) {
-    const level = getCompetitionDifficulty(name);
-    if (level === "Easy") return 20;
-    if (level === "Medium") return 40;
-    if (level === "Hard") return 60;
-    return 20;
-  }
-
   // Difficulty badge styling
   function getDifficultyBadgeClass(name) {
     const level = getCompetitionDifficulty(name);
@@ -140,31 +120,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const modal = new bootstrap.Modal(document.getElementById("globalModal"));
     modal.show();
-  }
-
-  // Show Claim Reward button only if user is Top 3
-  function updateClaimButtonIfTop3(competitionId, cardRootEl) {
-
-    fetchMethod(
-      `${GAME_API}/competitions/${competitionId}/leaderboard`,
-      (status, data) => {
-
-        if (status !== 200 || !Array.isArray(data)) return;
-
-        const top3 = data.slice(0, 3);
-
-        const isTop3 = top3.some(
-          (u) => Number(u.user_id) === Number(userId)
-        );
-
-        const claimBtn = cardRootEl.querySelector(".claim-btn");
-
-        if (claimBtn && isTop3) {
-          claimBtn.classList.remove("d-none");
-        }
-      },
-      "GET"
-    );
   }
 
   // ============================
@@ -256,30 +211,14 @@ document.addEventListener("DOMContentLoaded", () => {
   </span>
 </div>
 
-<div class="text-center small text-muted mb-2">
-  Multiplier: ×${getCompetitionMultiplier(name)}
-</div>
-
-
 <p class="card-text text-muted mb-3">${description}</p>
 
 <ul class="list-unstyled small mb-3">
   <li><strong>Level:</strong> ${getCompetitionDifficulty(name)}</li>
-  <li><strong>Multiplier:</strong> ×${getCompetitionMultiplier(name)}</li>
-
-  <li class="mt-2"><strong>Reward (Top 3):</strong></li>
-  <li class="ms-3">Base reward: ${getBaseRewardPoints(name)} pts</li>
-  <li class="ms-3">Final reward: ${getBaseRewardPoints(name) * getCompetitionMultiplier(name)
-        } pts</li>
-
-  <li class="mt-2"><strong>Scoring:</strong></li>
-  <li class="ms-3">Per completed challenge: ${10 * getCompetitionMultiplier(name)
-        } score</li>
+  <li><strong>Goal:</strong> Complete as many challenges as possible.</li>
+  <li><strong>Leaderboard:</strong> Ranked by total challenges completed after joining.</li>
 </ul>
 
-<button class="btn btn-success btn-sm w-100 mb-2 claim-btn d-none" type="button" data-id="${id}">
-  Claim Reward (Top 3)
-</button>
 
 <button class="btn btn-outline-light btn-sm w-100 back-btn" type="button">
   Back
@@ -295,11 +234,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       col.querySelector(".join-btn").addEventListener("click", () => joinCompetition(id));
       col.querySelector(".lb-btn").addEventListener("click", () => viewLeaderboard(id));
-      col.querySelector(".claim-btn").addEventListener("click", (e) => {
-        e.stopPropagation();
-        claimReward(id, name);
-      });
-
 
       const flipCard = col.querySelector(".comp-flip-card");
 
@@ -313,7 +247,6 @@ document.addEventListener("DOMContentLoaded", () => {
         flipCard.classList.remove("is-flipped");
       });
 
-      updateClaimButtonIfTop3(id, col);
       competitionList.appendChild(col);
     });
   }
@@ -364,76 +297,18 @@ document.addEventListener("DOMContentLoaded", () => {
           if (i === 2) medal = "🥉";
 
           return `
-          <div class="d-flex justify-content-between mb-2">
-            <div>${medal} ${u.username}</div>
-            <div>${u.score} score</div>
-          </div>
-        `;
+  <div class="d-flex justify-content-between mb-2">
+    <div>${medal} ${u.username}</div>
+    <div>${u.completion_count} challenges</div>
+  </div>
+`;
+
         }).join("");
 
         openModal("🏆 Leaderboard", rows);
       },
       "GET"
     );
-  }
-
-  function claimReward(competitionId, compName) {
-
-    const level = getCompetitionDifficulty(compName);
-    const mult = getCompetitionMultiplier(compName);
-
-    const baseReward = getBaseRewardPoints(compName);
-    const finalReward = baseReward * mult;
-
-    openModal(
-      "🏆 Claim Final Reward",
-
-      `
-      <div><strong>${compName}</strong></div>
-
-      <div class="mt-2">
-        Level: ${level}
-      </div>
-
-      <div>Multiplier: ×${mult}</div>
-
-      <div>Base reward: ${baseReward}</div>
-
-      <div>
-        Final reward:
-        <strong>${finalReward}</strong>
-      </div>
-    `,
-
-      `
-      <button class="btn btn-secondary" data-bs-dismiss="modal">
-        Cancel
-      </button>
-
-      <button class="btn btn-success" id="confirmClaimBtn">
-        Confirm
-      </button>
-    `
-    );
-
-    setTimeout(() => {
-
-      const confirmBtn = document.getElementById("confirmClaimBtn");
-
-      if (!confirmBtn) return;
-
-      confirmBtn.onclick = () => {
-
-        fetchMethod(
-          `${GAME_API}/competitions/${competitionId}/claim`,
-          () => loadCompetitions(),
-          "POST",
-          { user_id: userId }
-        );
-
-      };
-
-    }, 0);
   }
 
   // init

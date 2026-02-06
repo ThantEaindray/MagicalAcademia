@@ -33,16 +33,4 @@ router.post("/competitions/:competition_id/join", gamificationController.joinCom
 // GET /game/competitions/:competition_id/leaderboard
 router.get("/competitions/:competition_id/leaderboard", gamificationController.getLeaderboard);
 
-// POST /game/competitions/:competition_id/claim
-// Allows Top 3 players to claim final competition reward
-// Backend checks:
-// 1. User joined competition
-// 2. User has not claimed reward yet
-// 3. User is within Top 3 leaderboard ranking
-// Final reward = base reward × competition multiplier
-router.post(
-  "/competitions/:competition_id/claim",
-  gamificationController.claimCompetitionReward
-);
-
 module.exports = router;

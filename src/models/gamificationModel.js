@@ -139,19 +139,25 @@ module.exports.insertCompetitionEntry = (data, callback) => {
     pool.query(SQLSTATEMENT, VALUES, callback);
 };
 
-/* Leaderboard */
+/* Leaderboard by total completed challenges after joining */
 module.exports.selectLeaderboard = (data, callback) => {
-    const SQLSTATEMENT = `
-        SELECT u.user_id, u.username, e.score, e.joined_on
-        FROM UserCompetitionEntries e
-        INNER JOIN Users u ON e.user_id = u.user_id
-        WHERE e.competition_id = ?
-        ORDER BY e.score DESC, e.joined_on ASC;
-    `;
+  const SQLSTATEMENT = `
+    SELECT 
+      u.user_id,
+      u.username,
+      COUNT(uc.completion_id) AS completion_count
+    FROM UserCompetitionEntries e
+    INNER JOIN Users u 
+      ON e.user_id = u.user_id
+    LEFT JOIN UserCompletions uc
+      ON uc.user_id = u.user_id
+    WHERE e.competition_id = ?
+    GROUP BY u.user_id, u.username
+    ORDER BY completion_count DESC, u.username ASC;
+  `;
 
-    const VALUES = [data.competition_id];
-
-    pool.query(SQLSTATEMENT, VALUES, callback);
+  const VALUES = [data.competition_id];
+  pool.query(SQLSTATEMENT, VALUES, callback);
 };
 
 /* Get reward_points from a competition */
@@ -203,32 +209,3 @@ module.exports.selectUserCompletions = (data, callback) => {
   pool.query(SQLSTATEMENT, VALUES, callback);
 };
 
-/* Get competition base reward + name (for multiplier mapping) */
-module.exports.selectCompetitionRewardInfo = (data, callback) => {
-  const SQLSTATEMENT = `
-    SELECT name, reward_points
-    FROM Competitions
-    WHERE competition_id = ?;
-  `;
-  pool.query(SQLSTATEMENT, [data.competition_id], callback);
-};
-
-/* Check user's entry + reward_claimed */
-module.exports.selectUserEntryForCompetition = (data, callback) => {
-  const SQLSTATEMENT = `
-    SELECT entry_id, reward_claimed
-    FROM UserCompetitionEntries
-    WHERE competition_id = ? AND user_id = ?;
-  `;
-  pool.query(SQLSTATEMENT, [data.competition_id, data.user_id], callback);
-};
-
-/* Mark reward as claimed */
-module.exports.markCompetitionRewardClaimed = (data, callback) => {
-  const SQLSTATEMENT = `
-    UPDATE UserCompetitionEntries
-    SET reward_claimed = 1
-    WHERE competition_id = ? AND user_id = ?;
-  `;
-  pool.query(SQLSTATEMENT, [data.competition_id, data.user_id], callback);
-};

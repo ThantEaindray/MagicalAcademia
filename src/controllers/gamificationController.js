@@ -265,48 +265,24 @@ module.exports.joinCompetition = (req, res, next) => {
                 }
 
                 // Step 4: insert entry
-                gamificationModel.insertCompetitionEntry(data, (err4, result) => {
+                gamificationModel.insertCompetitionEntry(data, (err4) => {
                     if (err4) {
                         console.error("Failed joinCompetition (insert):", err4);
                         return res.status(500).json(err4);
                     }
 
-                    // Step 5: get reward_points
-                    gamificationModel.selectCompetitionRewardPoints(data, (err5, rewardRows) => {
-                        if (err5) {
-                            console.error("Failed joinCompetition (get reward_points):", err5);
-                            return res.status(500).json(err5);
-                        }
-
-                        const rewardPoints = Number(rewardRows[0].reward_points || 0);
-
-                        // Step 6: add reward points to user
-                        const pointsData = {
-                            user_id: data.user_id,
-                            points: rewardPoints
-                        };
-
-                        gamificationModel.addPointsToUser(pointsData, (err6, updateResult) => {
-                            if (err6) {
-                                console.error("Failed joinCompetition (add points):", err6);
-                                return res.status(500).json(err6);
-                            }
-
-                            return res.status(201).json({
-                                message: "Joined competition successfully",
-                                competition_id: data.competition_id,
-                                user_id: data.user_id,
-                                reward_points_awarded: rewardPoints
-                                // I return reward_points_awarded so frontend can show a nice popup like “+100 points!”
-                            });
-                        });
+                    return res.status(201).json({
+                        message: "Joined competition successfully",
+                        competition_id: data.competition_id,
+                        user_id: data.user_id
                     });
                 });
+
+
             });
         });
     });
 };
-
 
 /*
 Retrieve leaderboard for a competition.
@@ -359,112 +335,28 @@ Retrieve user completed challenges (UserCompletions).
   - return completions list (200)
 */
 module.exports.getUserCompletions = (req, res) => {
-  const userId = Number(req.params.user_id);
+    const userId = Number(req.params.user_id);
 
-  if (isNaN(userId) || userId <= 0) {
-    return res.status(400).json({ message: "user_id must be a positive number" });
-  }
-
-  const data = { user_id: userId };
-
-  // check user exists first (same pattern as getUserSpells)
-  gamificationModel.selectUserById(data, (err1, users) => {
-    if (err1) return res.status(500).json(err1);
-    if (users.length === 0) return res.status(404).json({ message: "User not found" });
-
-    gamificationModel.selectUserCompletions(data, (err2, rows) => {
-      if (err2) return res.status(500).json(err2);
-
-      return res.status(200).json({
-        user_id: users[0].user_id,
-        username: users[0].username,
-        points: users[0].points,
-        completions: rows
-      });
-    });
-  });
-};
-
-/*
-Claim final reward (Top 3 only).
-- body: { user_id }
-- checks:
-  1) user joined competition
-  2) reward not claimed yet
-  3) user is in Top 3
-- reward = baseReward * competitionMultiplier
-*/
-module.exports.claimCompetitionReward = (req, res) => {
-  const userId = Number(req.body.user_id);
-  const competitionId = Number(req.params.competition_id);
-
-  if (isNaN(userId) || userId <= 0) {
-    return res.status(400).json({ message: "user_id must be a positive number" });
-  }
-  if (isNaN(competitionId) || competitionId <= 0) {
-    return res.status(400).json({ message: "competition_id must be a positive number" });
-  }
-
-  const data = { user_id: userId, competition_id: competitionId };
-
-  // helper: same mapping you used frontend
-  const getCompetitionMultiplierByName = (compName) => {
-    const n = String(compName || "").toLowerCase();
-    if (n.includes("triwizard") || n.includes("n.e.w.t")) return 10000; // Hard
-    if (n.includes("dueling")) return 1000; // Medium
-    if (n.includes("house") || n.includes("o.w.l")) return 100; // Easy
-    return 1;
-  };
-
-  // 1) check user joined + not claimed
-  gamificationModel.selectUserEntryForCompetition(data, (err1, entryRows) => {
-    if (err1) return res.status(500).json(err1);
-    if (entryRows.length === 0) {
-      return res.status(404).json({ message: "You have not joined this competition." });
-    }
-    if (Number(entryRows[0].reward_claimed) === 1) {
-      return res.status(400).json({ message: "Reward already claimed." });
+    if (isNaN(userId) || userId <= 0) {
+        return res.status(400).json({ message: "user_id must be a positive number" });
     }
 
-    // 2) check Top 3
-    gamificationModel.selectLeaderboard(data, (err2, leaderboard) => {
-      if (err2) return res.status(500).json(err2);
+    const data = { user_id: userId };
 
-      const top3 = leaderboard.slice(0, 3);
-      const isTop3 = top3.some((r) => Number(r.user_id) === userId);
+    // check user exists first (same pattern as getUserSpells)
+    gamificationModel.selectUserById(data, (err1, users) => {
+        if (err1) return res.status(500).json(err1);
+        if (users.length === 0) return res.status(404).json({ message: "User not found" });
 
-      if (!isTop3) {
-        return res.status(403).json({ message: "Only Top 3 can claim the final reward." });
-      }
+        gamificationModel.selectUserCompletions(data, (err2, rows) => {
+            if (err2) return res.status(500).json(err2);
 
-      // 3) compute final reward
-      gamificationModel.selectCompetitionRewardInfo(data, (err3, compRows) => {
-        if (err3) return res.status(500).json(err3);
-        if (compRows.length === 0) return res.status(404).json({ message: "Competition not found" });
-
-        const baseReward = Number(compRows[0].reward_points || 0);
-        const mult = getCompetitionMultiplierByName(compRows[0].name);
-        const finalReward = baseReward * mult;
-
-        // 4) add points + mark claimed
-        gamificationModel.addPointsToUser(
-          { user_id: userId, points: finalReward },
-          (err4) => {
-            if (err4) return res.status(500).json(err4);
-
-            gamificationModel.markCompetitionRewardClaimed(data, (err5) => {
-              if (err5) return res.status(500).json(err5);
-
-              return res.status(200).json({
-                message: "Final reward claimed!",
-                base_reward: baseReward,
-                multiplier: mult,
-                final_reward: finalReward
-              });
+            return res.status(200).json({
+                user_id: users[0].user_id,
+                username: users[0].username,
+                points: users[0].points,
+                completions: rows
             });
-          }
-        );
-      });
+        });
     });
-  });
 };
