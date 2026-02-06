@@ -25,12 +25,48 @@ document.addEventListener("DOMContentLoaded", () => {
     warningCard.classList.add("d-none");
   };
 
-  // Because table has no "challenge_name", create a short title from description
-  function makeTitle(row) {
-    const desc = (row.description || "").trim();
-    if (!desc) return `Challenge #${row.challenge_id}`;
-    const words = desc.split(/\s+/).slice(0, 6).join(" ");
-    return desc.split(/\s+/).length > 6 ? `${words}...` : words;
+   function makeTitle(row) {
+  const desc = (row.description || "").trim();
+  if (!desc) return `Challenge #${row.challenge_id}`;
+  return desc; // FULL length title
+}
+
+  // Pick a nice image based on challenge title/description keywords
+  function getChallengeImage(title, description) {
+    const text = `${title || ""} ${description || ""}`.toLowerCase();
+
+    if (text.includes("stairs"))
+      return "https://i.pinimg.com/1200x/ff/8f/6f/ff8f6fca3ccd877944b45a7d5a61b9bc.jpg";
+
+    if (text.includes("water") || text.includes("hydrate"))
+      return "https://i.pinimg.com/736x/9e/56/ea/9e56eaaa5281d818522d60a29e8bdbf2.jpg";
+
+    if (text.includes("sleep"))
+      return "https://i.pinimg.com/736x/09/65/de/0965deb6fe7b19842fbc1c221990386c.jpg";
+
+    if (text.includes("walk") || text.includes("steps"))
+      return "https://i.pinimg.com/1200x/00/10/1a/00101af8fc9f1cdb28ed929eb83d5a52.jpg";
+
+    if (text.includes("detox"))
+      return "https://i.pinimg.com/736x/c8/69/db/c869dbf2cef60e3aa2cbd4089491d35d.jpg";
+
+    if (text.includes("friend"))
+      return "https://i.pinimg.com/1200x/ab/ce/a5/abcea5a0750c9aec99ba139ecc6d054d.jpg";
+
+    if (text.includes("desk"))
+      return "https://i.pinimg.com/736x/56/0e/d1/560ed19d202da5123567b5c19b9ed72f.jpg";
+
+    if (text.includes("stretch"))
+      return "https://i.pinimg.com/736x/9d/f6/e3/9df6e35237455963c0399dce983979f0.jpg";
+
+    if (text.includes("day"))
+      return "https://i.pinimg.com/736x/89/94/17/899417897215f425b7bd07cac4aeaa00.jpg";
+
+    if (text.includes("start"))
+      return "https://i.pinimg.com/736x/98/a6/83/98a683bbc17584f3d4d6868253f7a15c.jpg";
+    
+    // fallback
+    return "https://i.pinimg.com/1200x/e0/1a/27/e01a27e4c781b701aa84e966951ce160.jpg";
   }
 
   function loadChallenges() {
@@ -79,37 +115,83 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const col = document.createElement("div");
       col.className = "col-md-4";
+      const imgUrl = getChallengeImage(title, description);
 
       col.innerHTML = `
-        <div class="card h-100 shadow-sm">
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title">${title}</h5>
-            <p class="card-text text-muted">${description}</p>
-            <div class="small text-muted mb-2">
-  <div><strong>Base Points:</strong> ${points}</div>
-  <div><strong>Multiplier:</strong> x${multiplier.toFixed(2)}</div>
-  <div>
-    <strong>Reward Points:</strong>
-    ${points} × ${multiplier.toFixed(2)} = <b>${finalReward}</b> pts
-  </div>
-  <div><strong>Created by:</strong> Wizard #${creatorId}</div>
-</div>
+  <div class="challenge-flip-card h-100">
+    <div class="challenge-flip-inner">
 
-            <label class="form-label mt-2 small">Completion notes (optional)</label>
-            <textarea class="form-control form-control-sm mb-2" rows="2"
-              placeholder="E.g. Completed after gym session"
-              id="details-${id}"></textarea>
+      <!-- FRONT -->
+      <div class="challenge-front card shadow-sm h-100">
+        <img class="challenge-card-img" src="${imgUrl}" alt="${title}">
 
-            <div class="mt-auto d-flex justify-content-end">
-              <button class="btn btn-primary btn-sm" data-id="${id}">
-                Complete
-              </button>
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title text-center mb-2">🎯 ${title}</h5>
+
+          <label class="form-label mt-1 small">Completion notes (optional)</label>
+          <textarea
+            class="form-control form-control-sm mb-2 challenge-notes"
+            rows="2"
+            placeholder="E.g. Completed after gym session"
+            id="details-${id}"></textarea>
+
+          <button class="btn btn-primary btn-sm w-100 complete-btn" data-id="${id}">
+            Complete
+          </button>
+
+          <button class="btn btn-outline-light btn-sm w-100 mt-2 details-btn" type="button">
+            View Details
+          </button>
+        </div>
+      </div>
+
+      <!-- BACK -->
+      <div class="challenge-back card shadow-sm h-100">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title text-center mb-2">📜 Details</h5>
+
+          <div class="challenge-back-scroll small">
+            <p class="mb-2">
+              ${description}
+            </p>
+
+            <div class="text-muted">
+              <div><strong>Base Points:</strong> ${points}</div>
+              <div><strong>Multiplier:</strong> x${multiplier.toFixed(2)}</div>
+              <div>
+                <strong>Reward Points:</strong>
+                ${points} × ${multiplier.toFixed(2)} = <b>${finalReward}</b> pts
+              </div>
+              <div><strong>Created by:</strong> Wizard #${creatorId}</div>
             </div>
           </div>
-        </div>
-      `;
 
-      col.querySelector("button").addEventListener("click", () => completeChallenge(id));
+          <button class="btn btn-outline-light btn-sm w-100 mt-2 back-btn" type="button">
+            Back
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+`;
+
+      const flipCard = col.querySelector(".challenge-flip-card");
+
+      col.querySelector(".details-btn").addEventListener("click", (e) => {
+        e.stopPropagation();
+        flipCard.classList.add("is-flipped");
+      });
+
+      col.querySelector(".back-btn").addEventListener("click", (e) => {
+        e.stopPropagation();
+        flipCard.classList.remove("is-flipped");
+      });
+
+      col.querySelector(".complete-btn").addEventListener("click", (e) => {
+        e.stopPropagation();
+        completeChallenge(id);
+      });
       challengeList.appendChild(col);
     });
   }

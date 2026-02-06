@@ -135,7 +135,7 @@ The system includes a full gamification layer:
 - **Spells Shop** – users spend points to unlock magical spells
 - **Inventory** – unlocked spells are permanently stored per user
 - **Competitions** – users can join competitions to earn bonus points
-- **Leaderboards** – rankings based on competition scores
+- **Leaderboards** – rankings based on the number of challenge completed
 - **Admin role** – admin users can seed and manage challenges
 
 These features are implemented in a modular way and are ready for frontend integration in CA2.

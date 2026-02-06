@@ -119,16 +119,16 @@ INSERT INTO Courses (name, description, year_level) VALUES
 ('Ancient Runes', 'Understand consistency and long-term patterns.', 2);
 
 INSERT INTO Spells (name, effect, cost_points) VALUES
-('Lumos', 'Creates light for late-night study sessions.', 0),
+('Lumos', 'Creates light for late-night study sessions.', 7),
 ('Alohomora', 'Unlocks motivation to start tasks faster.', 10),
 ('Protego', 'Shields focus from distractions for a while.', 20),
 ('Expelliarmus', 'Disarms distractions like doom-scrolling.', 30),
-('Expecto Patronum', 'Boosts morale during stressful weeks.', 40),
+('Expecto Patronum', 'Boosts morale during stressful weeks.', 400),
 ('Accio', 'Pulls your attention back to the task.', 25),
 ('Finite Incantatem', 'Ends bad habits temporarily.', 15),
 ('Reparo', 'Helps recover after a broken streak.', 35),
-('Wingardium Leviosa', 'Lifts your mood and energy to keep going.', 20),
-('Stupefy', 'Stuns distractions so you can finish work.', 30);
+('Wingardium Leviosa', 'Lifts your mood and energy to keep going.', 200),
+('Stupefy', 'Stuns distractions so you can finish work.', 100);
 
 INSERT INTO Competitions (name, description, reward_points) VALUES
 ('House Cup', 'Earn points by completing challenges for your house.', 100),
