@@ -186,11 +186,13 @@ main p.text-muted {
 .mini-label {
   font-size: 0.85rem;
   opacity: 0.75;
+  text-align: center;
 }
 
 .mini-value {
   font-weight: 600;
   font-size: 1.05rem;
+  text-align: center;
 }
 
 .hero-img {

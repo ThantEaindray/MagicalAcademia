@@ -166,7 +166,41 @@ document.addEventListener("DOMContentLoaded", () => {
     }, "GET");
   }
 
+  function loadJoinedCompetitions() {
+    fetchMethod(`${currentUrl}/api/game/users/${userId}/competitions`, (status, data) => {
+      if (status !== 200) return;
 
+      const list = Array.isArray(data) ? data : (Array.isArray(data?.competitions) ? data.competitions : []);
+
+      competitionsList.innerHTML = "";
+
+      if (!list || list.length === 0) {
+        competitionsEmpty.classList.remove("d-none");
+        return;
+      }
+
+      competitionsEmpty.classList.add("d-none");
+
+      list.forEach((c) => {
+        const name = c.name ?? "Unnamed Competition";
+        const joinedAt = c.joined_on ? new Date(c.joined_on).toLocaleString() : "-";
+
+        const col = document.createElement("div");
+        col.className = "col-md-4";
+        col.innerHTML = `
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h6 class="mb-1">🏆 ${name}</h6>
+            <div class="small text-muted">Joined: ${joinedAt}</div>
+            </div>
+          </div>
+        </div>
+      `;
+        competitionsList.appendChild(col);
+      });
+    }, "GET");
+  }
+  
   const endpoint = `${currentUrl}/api/users/${userId}`;
 
   const callback = (status, data) => {
@@ -188,6 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
     hideWarning();
     loadUserSpells();
     loadUserCompletions();
+    loadJoinedCompetitions();
   };
 
   fetchMethod(endpoint, callback, "GET");

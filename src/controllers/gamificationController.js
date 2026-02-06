@@ -360,3 +360,39 @@ module.exports.getUserCompletions = (req, res) => {
         });
     });
 };
+
+/*
+Retrieve user competitions (UserCompetitionEntries).
+- Reads user_id from URL
+- Checks:
+  1) invalid user_id -> 400
+  2) user not found -> 404
+- If ok:
+  - return competitions list (200)
+*/
+module.exports.getUserCompetitions = (req, res) => {
+  const userId = Number(req.params.user_id);
+
+  if (isNaN(userId) || userId <= 0) {
+    return res.status(400).json({ message: "user_id must be a positive number" });
+  }
+
+  const data = { user_id: userId };
+
+  // check user exists first (same pattern as getUserSpells)
+  gamificationModel.selectUserById(data, (err1, users) => {
+    if (err1) return res.status(500).json(err1);
+    if (users.length === 0) return res.status(404).json({ message: "User not found" });
+
+    gamificationModel.selectUserCompetitions(data, (err2, rows) => {
+      if (err2) return res.status(500).json(err2);
+
+      return res.status(200).json({
+        user_id: users[0].user_id,
+        username: users[0].username,
+        points: users[0].points,
+        competitions: rows
+      });
+    });
+  });
+};

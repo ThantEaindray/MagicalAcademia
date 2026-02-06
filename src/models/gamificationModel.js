@@ -209,3 +209,24 @@ module.exports.selectUserCompletions = (data, callback) => {
   pool.query(SQLSTATEMENT, VALUES, callback);
 };
 
+/* Get user's competition entries */
+module.exports.selectUserCompetitions = (data, callback) => {
+  const SQLSTATEMENT = `
+    SELECT
+      uce.entry_id,
+      uce.competition_id,
+      uce.user_id,
+      uce.score,
+      uce.joined_on,
+      c.name,
+      c.description,
+      c.reward_points
+    FROM UserCompetitionEntries uce
+    INNER JOIN Competitions c ON uce.competition_id = c.competition_id
+    WHERE uce.user_id = ?
+    ORDER BY uce.joined_on DESC;
+  `;
+
+  const VALUES = [data.user_id];
+  pool.query(SQLSTATEMENT, VALUES, callback);
+};

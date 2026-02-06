@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
 
       const btn = col.querySelector("button");
-      btn.addEventListener("click", () => buySpell(id));
+      btn.addEventListener("click", () => buySpell(id, name, cost));
 
       spellList.appendChild(col);
     });
@@ -157,30 +157,71 @@ document.addEventListener("DOMContentLoaded", () => {
   // POST /game/users/:user_id/buy-spell
   // body: { spell_id }
   // ----------------------------
-  function buySpell(spellId) {
-    hideWarning();
+  function showNotEnoughPointsModal(spellName, cost, currentPoints) {
+  const need = Math.max(0, Number(cost) - Number(currentPoints));
 
-    const payload = { spell_id: Number(spellId) };
+  const body = document.getElementById("pointsModalBody");
+  const title = document.getElementById("pointsModalTitle");
 
-    fetchMethod(
-      `${currentUrl}/api/game/users/${userId}/buy-spell`,
-      (status, data) => {
-        console.log("POST buy-spell", status, data);
+  if (title) title.innerText = `Not enough points 😭`;
+  if (body) {
+    body.innerHTML = `
+      <p class="mb-2"><strong>Spell:</strong> ${spellName}</p>
+      <p class="mb-2">Your points: <b>${currentPoints}</b></p>
+      <p class="mb-0">You need: <b>${need}</b> more points (Cost: ${cost})</p>
+    `;
+  }
 
-        if (status === 200) {
-          alert("Spell purchased successfully 🪄");
-          // reload inventory + points so UI updates immediately
-          loadInventoryAndPoints();
-        } else {
-          // controller can return:
-          // 409 already owned, 400 not enough points, 404 not found :contentReference[oaicite:5]{index=5}
-          showWarning(data?.message || "Failed to buy spell.");
-        }
-      },
-      "POST",
-      payload
+  const modalEl = document.getElementById("pointsModal");
+  if (modalEl && window.bootstrap) {
+    new bootstrap.Modal(modalEl).show();
+  } else {
+    // fallback if bootstrap missing
+    alert(
+      `Not enough points 😭\n\n` +
+      `Spell: ${spellName}\n` +
+      `Your points: ${currentPoints}\n` +
+      `Cost: ${cost}\n` +
+      `Need: ${need} more points`
     );
   }
+}
+
+  function buySpell(spellId, spellName, cost) {
+  hideWarning();
+
+  // current points shown on UI (safe convert)
+  const currentPoints = Number(wizardPoints?.innerText ?? 0);
+
+  const payload = { spell_id: Number(spellId) };
+
+  fetchMethod(
+    `${currentUrl}/api/game/users/${userId}/buy-spell`,
+    (status, data) => {
+      console.log("POST buy-spell", status, data);
+
+      if (status === 200) {
+        alert("Spell purchased successfully 🪄");
+        loadInventoryAndPoints();
+        return;
+      }
+
+      // ✅ show modal ONLY for "not enough points"
+      const msg = String(data?.message || "");
+
+      if (status === 400 && msg.toLowerCase().includes("not enough")) {
+        showNotEnoughPointsModal(spellName, cost, currentPoints);
+        return;
+      }
+
+      // fallback for other errors (409 owned, 404 etc.)
+      showWarning(data?.message || "Failed to buy spell.");
+    },
+    "POST",
+    payload
+  );
+}
+
 
   // init
   loadShop();
